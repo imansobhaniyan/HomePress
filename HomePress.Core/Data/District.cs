@@ -12,6 +12,9 @@ namespace HomePress.Core.Data
         public string? StateId { get; set; }
         public string? CityId { get; set; }
         public string? Name { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
     }
 
 }

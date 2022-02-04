@@ -93,13 +93,8 @@ namespace HomePress.Core.Data
         public string? UnitOtherFeatures { get; set; }
 
 
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreatedAt { get; set; }
-
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime PublishedAt { get; set; }
-
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ModifiedAt { get; set; }
 
     }
@@ -113,25 +108,9 @@ namespace HomePress.Core.Data
         public string? Width1920 { get; set; }
     }
 
-    public enum PropertyStatus
-    {
-        Draft, Pending, Review, Published, SoldOut, Archived
-    }
+    
 
-    public enum PropertyTypes
-    {
-        Apartment, Villa, Office, Shop
-    }
 
-    public enum PropertyCategories
-    {
-        Buy, Rent, ShortTermRent
-    }
-
-    public enum PricePrefix
-    {
-        EUR, USD, TL
-    }
 
 
 

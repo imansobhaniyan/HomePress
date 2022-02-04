@@ -20,6 +20,9 @@ namespace HomePress.Core.Data
         public int PhoneCode { get; set; }
         public int NumericCode { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
+
     }
 
 }

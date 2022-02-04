@@ -3,17 +3,18 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace HomePress.Core.Data
 {
-    public class City
+    public class Language
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        public string? CountryId { get; set; }
-        public string? StateId { get; set; }
-        public string? Name { get; set; }
+        public string? FlagUrl { get; set; }
+        public string? EnglishName { get; set; }
+        public string? LocalName { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDefault { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
     }
-
 }
