@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomePress.Dashboard", "HomePress.Dashboard\HomePress.Dashboard.csproj", "{2712D612-EB6E-4CDD-AB9F-2180395CE5BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomePress.Core", "HomePress.Core\HomePress.Core.csproj", "{C69C1E32-314A-4B93-8636-70293BDFBF34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2712D612-EB6E-4CDD-AB9F-2180395CE5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2712D612-EB6E-4CDD-AB9F-2180395CE5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2712D612-EB6E-4CDD-AB9F-2180395CE5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2712D612-EB6E-4CDD-AB9F-2180395CE5BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C69C1E32-314A-4B93-8636-70293BDFBF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C69C1E32-314A-4B93-8636-70293BDFBF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C69C1E32-314A-4B93-8636-70293BDFBF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C69C1E32-314A-4B93-8636-70293BDFBF34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A32C439-7364-4B57-A80C-3B28CDC8BAF6}
+	EndGlobalSection
+EndGlobal
