@@ -1,0 +1,33 @@
+﻿.data-table-bar a {
+    color: #999;
+}
+
+    .data-table-bar a.active {
+        color: #444;
+    }
+
+    .data-table-bar a.disabled, .data-table-bar a.disabled:hover {
+        color: #CCC;
+        cursor: default;
+    }
+
+    .data-table-bar a:hover {
+        color: #000;
+    }
+
+.empty-data {
+    margin:100px;
+    text-align:center
+}
+.empty-data i {
+    font-size:24px
+}
+
+.multi-action-row {
+    background-color: #f9f9f9 !important;
+}
+
+.multi-action-row i {
+    font-size:18px;
+    padding-top:2px;
+}
