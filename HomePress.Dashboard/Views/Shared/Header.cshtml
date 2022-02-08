@@ -6,8 +6,8 @@
         <div class="page-title d-flex flex-column align-items-start justify-content-center flex-wrap me-2 pb-5 pb-lg-0 pt-7 pt-lg-0" data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', lg: '#kt_header_container'}">
             <!--begin::Heading-->
             <h1 class="d-flex flex-column text-dark fw-bolder my-0 fs-1">
-                Dashboard
-                <small class="text-muted fs-6 fw-bold ms-1 pt-1">You’ve got 24 New Sales</small>
+                <span>@ViewBag.Title</span>
+                <small class="text-muted fs-6 fw-bold ms-1 pt-1">@ViewBag.SubTitle</small>
             </h1>
             <!--end::Heading-->
         </div>
@@ -36,14 +36,15 @@
         <!--begin::Topbar-->
         <div class="d-flex align-items-center flex-shrink-0">
 
-            <div class="d-flex align-items-baseline ms-3 ms-lg-4">
-                <a href="" class="btn btn-primary btn-sm">
-                    <i class="fa-regular fa-plus"></i>
-                    <span style="font-size:12px;">
-                        Add New Property
-                    </span>
-                </a>
-            </div>
+            @if (ViewBag.AddButtonLink != null && ViewBag.AddButtonTitle != null)
+            {
+                <div class="d-flex align-items-baseline ms-3 ms-lg-4">
+                    <a href="@ViewBag.AddButtonLink" class="btn btn-primary btn-sm">
+                        <i class="fa-regular fa-plus"></i>
+                        <span style="font-size:12px;">@ViewBag.AddButtonTitle</span>
+                    </a>
+                </div>
+            }
 
             <!--begin::Activities-->
             <div class="d-flex align-items-center ms-3 ms-lg-4">

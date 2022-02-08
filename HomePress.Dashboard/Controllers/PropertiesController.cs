@@ -10,14 +10,11 @@ namespace HomePress.Dashboard.Controllers
             return View();
         }
 
-
         [Route("create")]
         [Route("edit/{id}")]
         public IActionResult PropertyForm()
         {
             return View();
         }
-
-
     }
 }

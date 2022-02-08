@@ -1,0 +1,115 @@
+﻿@model User
+
+
+<form method="post" class="need-validation" action="/user/save" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input name="Id" value="@Model.Id" type="hidden" />
+    <input name="Password" value="@Model.Password" type="hidden" />
+    <input name="AvatarUrl" value="@Model.AvatarUrl" type="hidden" />
+    @if (!string.IsNullOrWhiteSpace(Model.Id))
+    {
+        <input name="CreatedAt" value="@Model.CreatedAt" type="hidden" />
+    }
+    <div class="card mb-5 mb-xl-10">
+        <div class="card-header border-0 align-items-center">
+            <div class="card-title m-0">
+                @*<h3 class="fw-bolder m-0">@(string.IsNullOrWhiteSpace(Model.Id) ? "Create" : "Edit") Language</h3>*@
+            </div>
+            <div class="card-action">
+                <a href="/user" class="btn btn-secondary btn-sm">
+                    <i class="fa-regular fa-chevron-left"></i>
+                    Back To List
+                </a>
+                <button type="submit" class="btn btn-success btn-sm">
+                    Save User
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body border-top p-9">
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">First name</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="FirstName" class="form-control form-control-solid" placeholder="First name" value="@Model.FirstName" required />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Last name</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="LastName" class="form-control form-control-solid" placeholder="Last name" value="@Model.LastName" required />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Avatar</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="file" name="AvatarFile" class="form-control form-control-solid" />
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.AvatarUrl))
+                {
+                    <span class='col-xl-4 col-lg-3 col-md-12'>
+                        <img width="64" src="@Model.AvatarUrl" alt="@Model.FirstName @Model.LastName" />
+                    </span>
+                }
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Email</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="email" name="Email" class="form-control form-control-solid" placeholder="Email" value="@Model.Email" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Phone</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="tel" name="Phone" class="form-control form-control-solid" placeholder="Phone" value="@Model.Phone" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Password</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="password" name="NewPassword" class="form-control form-control-solid" placeholder="Password" @(string.IsNullOrWhiteSpace(Model.Id) ? "required" : "value=password") />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Gender</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select gender" name="Gender" required>
+                        <option value="">Select</option>
+                        <option value="1" selected="@(Model.Gender == HomePress.Gender.Male)">Mail</option>
+                        <option value="0" selected="@(!string.IsNullOrWhiteSpace(Model.Id) && Model.Gender == HomePress.Gender.Female)">Femail</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">User status</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select status" name="UserStatus" required>
+                        <option value="">Select</option>
+                        <option value="1" selected="@(Model.UserStatus == HomePress.UserStatus.Active)">Active</option>
+                        <option value="0" selected="@(!string.IsNullOrWhiteSpace(Model.Id) && Model.UserStatus == HomePress.UserStatus.Inactive)">Inactive</option>
+                        <option value="2" selected="@(Model.UserStatus == HomePress.UserStatus.Banned)">Banned</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">User type</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select type" name="UserType" required>
+                        <option value="">Select</option>
+                        <option value="1" selected="@(Model.UserType == HomePress.UserTypes.Admin)">Admin</option>
+                        <option value="2" selected="@(Model.UserType == HomePress.UserTypes.Agent)">Agent</option>
+                        <option value="3" selected="@(Model.UserType == HomePress.UserTypes.Client)">Client</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="/user" class="btn btn-secondary btn-sm">
+                <i class="fa-regular fa-chevron-left"></i>
+                Back To List
+            </a>
+            <button type="submit" class="btn btn-success btn-sm">
+                Save User
+            </button>
+        </div>
+    </div>
+</form>

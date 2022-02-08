@@ -1,0 +1,184 @@
+﻿@model DistrictVewModel
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 pt-6">
+        <div class="card-title" style="font-size:1rem">
+            <div class="d-flex align-items-center position-relative my-1 ms-2 data-table-bar">
+                <a href="#" onclick="event.preventDefault(); location.reload();" class="p-2 cursor-pointer me-5" title="Refresh">
+                    <i class="fa-regular fa-redo" style="color: #444"></i>
+                </a>
+                @*<div class="mx-2">
+                    <i class="fa-regular fa-horizontal-rule fa-rotate-90"></i>
+                    </div>
+                    <div class="px-4">
+                    <a href="#" class="active">Main List</a>
+                    </div>
+                    <div class="px-4">
+                    <a href="#">Trashed (2)</a>
+                    </div>
+                    <div class="px-4">
+                    <a href="#">Draft</a>
+                    </div>*@
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex justify-content-end align-items-center" data-kt-user-table-toolbar="base">
+                <div class="d-flex align-items-center position-relative my-1 mx-2">
+                    <span class="svg-icon svg-icon-1 position-absolute ms-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="black" />
+                            <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="black" />
+                        </svg>
+                    </span>
+                    <input type="text" class="form-control form-control-sm w-250px ps-10" placeholder="Search Property" />
+                </div>
+                <div class="mx-2">
+                    <select class="form-select form-select-sm" style="width:120px">
+                        <option selected="@(Model.PageSize == 20)" value="20">Rows (20)</option>
+                        <option selected="@(Model.PageSize == 50)" value="50">Rows (50)</option>
+                        <option selected="@(Model.PageSize == 100)" value="100">Rows (100)</option>
+                    </select>
+                </div>
+                @*<div class="mx-2">
+                    <button class="btn btn-light btn-sm">
+                    <i class="fa-regular fa-filter"></i>
+                    Filter
+                    </button>
+                    </div>*@
+                <div class="mx-2">
+                    <button class="btn btn-light btn-sm">
+                        <i class="fa-regular fa-sort-amount-down"></i>
+                        Sort
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body pt-0 position-relative">
+        <div class="d-flex multi-action-row align-items-center px-2 py-3 selected-items-container hidden">
+            <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                <input class="form-check-input select-all-action" type="checkbox" id="data-table-check-all" data-kt-check="true" data-kt-check-target="#data_table_1 .form-check-input" value="1" />
+            </div>
+            <a href="#" onclick="event.preventDefault(); ShowDeleteModal();" class="mx-3" data-bs-toggle="modal" data-bs-target="#modal-trash-many" title="Delete Selected Rows">
+                <i class="fa-regular fa-circle-minus text-danger"></i>
+            </a>
+            <div class="ms-4 selected-items-count" style="font-size:12px;">5 item(s) selected!</div>
+        </div>
+
+        @if (Model.Items.Count == 0)
+        {
+            <div class="empty-data">
+                <div class="text-center">
+                    <i class="fa-regular fa-triangle-exclamation"></i>
+                </div>
+                <span>There is no row to show!</span>
+            </div>
+        }
+        else
+        {
+            <table class="table table-responsive table-hover table-sm align-middle table-row-dashed" id="data_table_1">
+                <thead>
+                    <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+                        <th class="w-10px pe-2 ps-2">
+                            <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                <input class="form-check-input select-all" type="checkbox" id="data-table-check-all" data-kt-check="true" data-kt-check-target="#data_table_1 .form-check-input" value="1" />
+                            </div>
+                        </th>
+                        <th class="min-w-125px">District</th>
+                        <th class="min-w-125px">Country/State/City</th>
+                        <th class="min-w-125px">Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td class="ps-2">
+                                <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                    <input class="form-check-input select-item" type="checkbox" value="@item.Id" />
+                                </div>
+                            </td>
+                            <td class="align-items-center">
+                                <span>@item.Name</span>
+                            </td>
+                            <td class="align-items-center">
+                                <span>@Model.Countries.Where(f => f.Id == item.CountryId).Select(f => f.Name).FirstOrDefault()</span>
+                                <span>@Model.States.Where(f => f.Id == item.StateId).Select(f => f.Name).FirstOrDefault()</span>
+                                <span>@Model.Cities.Where(f => f.Id == item.CityId).Select(f => f.Name).FirstOrDefault()</span>
+                            </td>
+                            <td class="align-items-center">@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-end">
+                                <a href="#" class="btn btn-default bnt-icon btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                    <i class="fa-regular fa-ellipsis-vertical"></i>
+                                </a>
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4" data-kt-menu="true">
+                                    <div class="menu-item px-3">
+                                        <a href="/district/edit/@item.Id" class="menu-link px-3">
+                                            <i class="fa-regular fa-edit me-2"></i>
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <div class="menu-item px-3">
+                                        <a href="#" class="menu-link px-3 text-danger" onclick="event.preventDefault(); ShowDeleteModal('@item.Id');">
+                                            <i class="fa-regular fa-circle-xmark me-2 text-danger"></i>
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    @if (Model.TotalPagesCount > 1)
+    {
+        <div class="card-footer text-end">
+            <div class="row align-items-center">
+                <div class="col-sm-3 text-muted text-start">
+                    @if (Model.TotalPagesCount > 1)
+                    {
+                        <span>@Model.From to @Model.To rows of @Model.TotalItemsCount</span>
+                    }
+                </div>
+                <div class="col-sm-6">
+                    <ul class="pagination pagination-circle">
+                        @if (Model.PageNumber != 1)
+                        {
+                            <li class="page-item previous disabled"><a href="#" class="page-link"><i class="previous"></i></a></li>
+                        }
+
+                        @for (var i = 1; i <= Model.TotalPagesCount; i++)
+                        {
+                            if (i == Model.PageNumber)
+                            {
+                                <li class="page-item active">
+                                    <a href="#" onclick="event.preventDefault();" class="page-link">
+                                        <span>@i</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a href="#" onclick="event.preventDefault(); SetPage(@i)" class="page-link">
+                                        <span>@i</span>
+                                    </a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.PageNumber != Model.TotalPagesCount)
+                        {
+                            <li class="page-item next"><a href="#" class="page-link"><i class="next"></i></a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                </div>
+            </div>
+        </div>
+    }
+</div>

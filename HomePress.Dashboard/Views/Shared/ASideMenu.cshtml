@@ -1,12 +1,16 @@
-﻿<!--begin::Aside menu-->
+﻿@using Microsoft.AspNetCore.Routing
+
+@{
+    var controller = Context.GetRouteValue("controller")?.ToString();
+    var action = Context.GetRouteValue("action")?.ToString();
+}
+
 <div class="aside-menu flex-column-fluid ps-3 ps-lg-5 pe-1 mb-9" id="kt_aside_menu">
-    <!--begin::Aside Menu-->
     <div class="w-100 hover-scroll-overlay-y pe-2 me-2" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_user, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside, #kt_aside_menu, #kt_aside_menu_wrapper" data-kt-scroll-offset="0">
-        <!--begin::Menu-->
         <div class="menu menu-column menu-rounded fw-bold" id="#kt_aside_menu" data-kt-menu="true">
 
             <div class="menu-item">
-                <a class="menu-link" href="/dashboard">
+                <a class="menu-link @(controller == "Dashboard" && action == "Index" ? "active" : string.Empty)" href="/dashboard">
                     <span class="menu-icon">
                         <i class="fa-regular fa-dashboard"></i>
                     </span>
@@ -14,8 +18,7 @@
                 </a>
             </div>
 
-            <div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
-
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <i class="fa-regular fa-home"></i>
@@ -55,9 +58,7 @@
                 </div>
             </div>
 
-
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(controller == "User" ? "show" : string.Empty)">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <i class="fa-regular fa-user"></i>
@@ -68,21 +69,26 @@
                 <div class="menu-sub menu-sub-accordion">
 
                     <div class="menu-item">
-                        <a class="menu-link" href="/">
+                        <a class="menu-link @(controller == "User" && action == "Index" ? "active" : string.Empty)" href="/user">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">My Drafts</span>
+                            <span class="menu-title">Users</span>
                         </a>
                     </div>
-
+                    <div class="menu-item">
+                        <a class="menu-link @(controller == "User" && action == "Create" ? "active" : string.Empty)" href="/user/create">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">New user</span>
+                        </a>
+                    </div>
 
                 </div>
             </div>
 
-
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(controller == "Language" || controller == "District" ? "show" : string.Empty)">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <i class="fa-regular fa-cog"></i>
@@ -93,23 +99,26 @@
                 <div class="menu-sub menu-sub-accordion">
 
                     <div class="menu-item">
-                        <a class="menu-link" href="/">
+                        <a class="menu-link @(controller == "District" && action == "Index" ? "active" : string.Empty)" href="/district">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">My Drafts</span>
+                            <span class="menu-title">District</span>
                         </a>
                     </div>
 
+                    <div class="menu-item">
+                        <a class="menu-link @(controller == "Language" && action == "Index" ? "active" : string.Empty)" href="/language">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Languages</span>
+                        </a>
+                    </div>
 
                 </div>
             </div>
 
-
-
         </div>
-        <!--end::Menu-->
     </div>
-    <!--end::Aside Menu-->
 </div>
-<!--end::Aside menu-->

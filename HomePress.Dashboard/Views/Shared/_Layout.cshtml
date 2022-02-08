@@ -1,7 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Routing
+
+@{
+    var controller = Context.GetRouteValue("controller");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>HomePress</title>
+    <title>@ViewBag.SubTitle</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -33,7 +39,7 @@
 
             <!--begin::Wrapper-->
             <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
-                
+
                 <partial name="Header" />
 
                 <!--begin::Content-->
@@ -49,7 +55,7 @@
                     <!--end::Container-->
                 </div>
                 <!--end::Content-->
-                
+
             </div>
             <!--end::Wrapper-->
 
@@ -2440,6 +2446,29 @@
         </div>
         <!--end::Modal dialog-->
     </div>
+
+    <div class="modal fade delete-modal" tabindex="-1" id="kt_modal_1">
+        <div class="modal-dialog">
+            <form class="modal-content" method="post" action="/@controller/delete">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ids" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm delete</h5>
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                        <span class="svg-icon svg-icon-2x"></span>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p>This operation cannot be undone. <span class="text-danger">Are you sure?</span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!--end::Modal - Users Search-->
     <!--end::Modals-->
     <!--begin::Javascript-->
@@ -2457,6 +2486,7 @@
     <script src="/assets/js/custom/widgets.js"></script>
     <script src="/assets/js/custom/apps/chat/chat.js"></script>
     <script src="/assets/js/custom/utilities/modals/users-search.js"></script>
+    <script src="/assets/js/site.js"></script>
     <!--end::Page Custom Javascript-->
     <!--end::Javascript-->
 </body>

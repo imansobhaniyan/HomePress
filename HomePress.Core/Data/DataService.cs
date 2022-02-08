@@ -1,11 +1,13 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Configuration;
+
+using MongoDB.Driver;
+
+using System.Data;
 
 namespace HomePress.Core.Data
 {
-
     public class DataService
     {
-        private IMongoDatabase db;
         private readonly TextSearchOptions searchOptions;
 
         private readonly IMongoCollection<Country> countries;
@@ -13,191 +15,227 @@ namespace HomePress.Core.Data
         private readonly IMongoCollection<City> cities;
         private readonly IMongoCollection<District> districts;
 
+        private readonly IMongoCollection<User> users;
+
+        private readonly IMongoCollection<Language> languages;
 
         private readonly IMongoCollection<Property> properties;
 
 
-        public DataService(IMongoClient client, string dbName)
+        public DataService(IConfiguration configuration)
         {
-            db = client.GetDatabase(dbName);
+            var client = new MongoClient(configuration.GetConnectionString("default"));
+
+            var db = client.GetDatabase("home_press");
             searchOptions = new TextSearchOptions { CaseSensitive = false, DiacriticSensitive = false };
 
             countries = db.GetCollection<Country>("countries");
             states = db.GetCollection<State>("states");
             cities = db.GetCollection<City>("cities");
             districts = db.GetCollection<District>("districts");
-            initLocations();
+            initLocations().GetAwaiter().GetResult();
+
+            users = db.GetCollection<User>("users");
+            initRootUser().GetAwaiter().GetResult();
+
+            languages = db.GetCollection<Language>("languages");
 
             properties = db.GetCollection<Property>("properties");
 
         }
 
-
-        private void initLocations()
+        private async Task initRootUser()
         {
-            if (!Countries.Any())
+            if (!await (await Users.FindAsync(f => f.Email == "root")).AnyAsync())
+                await SaveAsync(new User
+                {
+                    Email = "root",
+                    Phone = "root",
+                    FirstName = "root",
+                    LastName = "user",
+                    UserType = UserTypes.Admin,
+                    UserStatus = UserStatus.Active,
+                    Gender = Gender.Male,
+                    LanguageIds = new List<string> { "en" },
+                    Password = User.EncryptPassword("root")
+                });
+        }
+
+        private async Task initLocations()
+        {
+            if (!await (await Countries.FindAsync(f => true)).AnyAsync())
             {
-                var cont = Save(new Country
+                var cont = await SaveAsync(new Country
                 {
                     FullName = "Turkey",
                     Name = "Turkey",
                     PhoneCode = 90
-                }).Result;
+                });
 
-                var state = Save(new State
+                var state = await SaveAsync(new State
                 {
                     CountryId = cont.Id,
                     Name = "Antalya"
-                }).Result;
+                });
 
-                var city = Save(new City
+                var city = await SaveAsync(new City
                 {
                     CountryId = cont.Id,
                     StateId = state.Id,
                     Name = "Alanya"
-                }).Result;
+                });
 
             }
         }
-
 
         #region Country
-        public IQueryable<Country> Countries
-        {
-            get
-            {
-                return countries.AsQueryable();
-            }
-        }
-        public async Task<Country?> FindCountry(string id)
-        {
-            return await countries.Find(f => f.Id == id).FirstOrDefaultAsync();
-        }
 
-        public async Task<Country> Save(Country item)
+        public IMongoCollection<Country> Countries => countries;
+
+        public async Task<Country> SaveAsync(Country item)
         {
             var update = !string.IsNullOrEmpty(item.Id);
+
+            item.ModifiedAt = DateTime.Now;
+
             if (update)
-            {
                 await countries.ReplaceOneAsync(f => f.Id == item.Id, item);
-            }
             else
             {
+                item.CreatedAt = DateTime.Now;
                 await countries.InsertOneAsync(item);
             }
             return item;
         }
 
-        public async Task Remove(Country item)
-        {
-            if (string.IsNullOrEmpty(item.Id)) return;
-            await countries.DeleteOneAsync(f => f.Id == item.Id);
-        }
         #endregion
 
         #region States
-        public IQueryable<State> States
-        {
-            get
-            {
-                return states.AsQueryable();
-            }
-        }
-        public async Task<State?> FindState(string id)
-        {
-            return await states.Find(f => f.Id == id).FirstOrDefaultAsync();
-        }
 
-        public async Task<State> Save(State item)
+        public IMongoCollection<State> States => states;
+
+        public async Task<State> SaveAsync(State item)
         {
             var update = !string.IsNullOrEmpty(item.Id);
+
+            item.ModifiedAt = DateTime.Now;
+
             if (update)
-            {
                 await states.ReplaceOneAsync(f => f.Id == item.Id, item);
-            }
             else
             {
+                item.CreatedAt = DateTime.Now;
                 await states.InsertOneAsync(item);
             }
             return item;
         }
 
-        public async Task Remove(State item)
-        {
-            if (string.IsNullOrEmpty(item.Id)) return;
-            await states.DeleteOneAsync(f => f.Id == item.Id);
-        }
         #endregion
 
         #region Cities
-        public IQueryable<City> Cities
-        {
-            get
-            {
-                return cities.AsQueryable();
-            }
-        }
-        public async Task<City?> FindCity(string id)
-        {
-            return await cities.Find(f => f.Id == id).FirstOrDefaultAsync();
-        }
 
-        public async Task<City> Save(City item)
+        public IMongoCollection<City> Cities => cities;
+
+        public async Task<City> SaveAsync(City item)
         {
             var update = !string.IsNullOrEmpty(item.Id);
+
+            item.ModifiedAt = DateTime.Now;
+
             if (update)
-            {
                 await cities.ReplaceOneAsync(f => f.Id == item.Id, item);
-            }
             else
             {
+                item.CreatedAt = DateTime.Now;
                 await cities.InsertOneAsync(item);
             }
             return item;
         }
 
-        public async Task Remove(City item)
-        {
-            if (string.IsNullOrEmpty(item.Id)) return;
-            await cities.DeleteOneAsync(f => f.Id == item.Id);
-        }
         #endregion
 
         #region Districts
-        public IQueryable<District> Districts
-        {
-            get
-            {
-                return districts.AsQueryable();
-            }
-        }
-        public async Task<District?> FindDistrict(string id)
-        {
-            return await districts.Find(f => f.Id == id).FirstOrDefaultAsync();
-        }
 
-        public async Task<District> Save(District item)
+        public IMongoCollection<District> Districts => districts;
+
+        public async Task<District> SaveAsync(District item)
         {
             var update = !string.IsNullOrEmpty(item.Id);
+
+            item.ModifiedAt = DateTime.Now;
+
             if (update)
-            {
                 await districts.ReplaceOneAsync(f => f.Id == item.Id, item);
-            }
             else
             {
+                item.CreatedAt = DateTime.Now;
                 await districts.InsertOneAsync(item);
+            }
+
+            return item;
+        }
+
+        public async Task RemoveDistrictsAsync(params string[] itemIds)
+        {
+            await districts.DeleteManyAsync(new FilterDefinitionBuilder<District>().In(f => f.Id, itemIds));
+        }
+
+        #endregion
+
+        #region Users
+
+        public IMongoCollection<User> Users => users;
+
+        public async Task<User> SaveAsync(User item)
+        {
+            var update = !string.IsNullOrEmpty(item.Id);
+
+            item.ModifiedAt = DateTime.Now;
+
+            if (update)
+                await users.ReplaceOneAsync(f => f.Id == item.Id, item);
+            else
+            {
+                item.CreatedAt = DateTime.Now;
+                await users.InsertOneAsync(item);
+            }
+
+            return item;
+        }
+
+        public async Task RemoveUsersAsync(params string[] itemIds)
+        {
+            await users.DeleteManyAsync(new FilterDefinitionBuilder<User>().In(f => f.Id, itemIds));
+        }
+
+        #endregion
+
+        #region Languages
+
+        public IMongoCollection<Language> Languages => languages;
+
+        public async Task<Language> SaveAsync(Language item)
+        {
+            var update = !string.IsNullOrEmpty(item.Id);
+
+            item.ModifiedAt = DateTime.Now;
+
+            if (update)
+                await languages.ReplaceOneAsync(f => f.Id == item.Id, item);
+            else
+            {
+                item.CreatedAt = DateTime.Now;
+                await languages.InsertOneAsync(item);
             }
             return item;
         }
 
-        public async Task Remove(District item)
+        public async Task RemoveLanguagesAsync(params string[] itemIds)
         {
-            if (string.IsNullOrEmpty(item.Id)) return;
-            await districts.DeleteOneAsync(f => f.Id == item.Id);
+            await languages.DeleteManyAsync(new FilterDefinitionBuilder<Language>().In(f => f.Id, itemIds));
         }
+
         #endregion
-
-
 
         #region Properties
         public IQueryable<Property> Properties
@@ -239,12 +277,5 @@ namespace HomePress.Core.Data
             await properties.DeleteOneAsync(f => f.Id == item.Id);
         }
         #endregion
-
-
-
-
     }
-
-
-
 }

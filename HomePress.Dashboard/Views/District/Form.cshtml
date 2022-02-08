@@ -1,0 +1,82 @@
+﻿@inject DataService dataService
+
+@model District
+
+<form method="post" class="need-validation" action="/district/save">
+    @Html.AntiForgeryToken()
+    <input name="Id" value="@Model.Id" type="hidden" />
+    @if (!string.IsNullOrWhiteSpace(Model.Id))
+    {
+        <input name="CreatedAt" value="@Model.CreatedAt" type="hidden" />
+    }
+    <div class="card mb-5 mb-xl-10">
+        <div class="card-header border-0 align-items-center">
+            <div class="card-title m-0">
+                @*<h3 class="fw-bolder m-0">@(string.IsNullOrWhiteSpace(Model.Id) ? "Create" : "Edit") Language</h3>*@
+            </div>
+            <div class="card-action">
+                <a href="/district" class="btn btn-secondary btn-sm">
+                    <i class="fa-regular fa-chevron-left"></i>
+                    Back To List
+                </a>
+                <button type="submit" class="btn btn-success btn-sm">
+                    Save District
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body border-top p-9">
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Country</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" name="CountryId" data-control="select2" data-placeholder="Select country" required>
+                        <option></option>
+                        @foreach (var country in await (await dataService.Countries.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@country.Id" selected="@(country.Id == Model.CountryId)">@country.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">State</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" name="StateId" data-control="select2" data-placeholder="Select state" required>
+                        <option></option>
+                        @foreach (var state in await (await dataService.States.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@state.Id" selected="@(state.Id == Model.StateId)">@state.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">City</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" name="CityId" data-control="select2" data-placeholder="Select city" required>
+                        <option></option>
+                        @foreach (var city in await (await dataService.Cities.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@city.Id" selected="@(city.Id == Model.CityId)">@city.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Name</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="Name" class="form-control form-control-solid" placeholder="Name" value="@Model.Name" required />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="/district" class="btn btn-secondary btn-sm">
+                <i class="fa-regular fa-chevron-left"></i>
+                Back To List
+            </a>
+            <button type="submit" class="btn btn-success btn-sm">
+                Save District
+            </button>
+        </div>
+    </div>
+</form>

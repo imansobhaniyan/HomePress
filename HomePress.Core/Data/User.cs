@@ -1,6 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Unicode;
+
 namespace HomePress.Core.Data
 {
     public class User
@@ -22,17 +26,13 @@ namespace HomePress.Core.Data
         public UserTypes UserType { get; set; }
 
         public List<string>? LanguageIds { get; set; }
-
-
         
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
 
+        public static string EncryptPassword(string crudePassword)
+        {
+            return UTF8Encoding.UTF8.GetString(MD5.HashData(UTF8Encoding.UTF8.GetBytes(crudePassword)));
+        }
     }
-
-
-    
-
-
-
 }
