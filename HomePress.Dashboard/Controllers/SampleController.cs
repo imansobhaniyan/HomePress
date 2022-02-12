@@ -14,5 +14,10 @@ namespace HomePress.Dashboard.Controllers
             return View();
         }
 
+        public IActionResult PropertyForm()
+        {
+            return View();
+        }
+
     }
 }

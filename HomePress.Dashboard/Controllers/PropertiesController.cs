@@ -5,10 +5,12 @@ namespace HomePress.Dashboard.Controllers
     [Route("{controller}")]
     public class PropertiesController : Controller
     {
-        public IActionResult Index()
+        [Route("")]
+        public IActionResult PropertyList()
         {
             return View();
         }
+
 
         [Route("create")]
         [Route("edit/{id}")]

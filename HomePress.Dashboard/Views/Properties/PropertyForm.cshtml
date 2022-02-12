@@ -1,4 +1,4 @@
-﻿
+﻿@model HomePress.Core.Data.Property
 <form>
     
     <div class="card mb-5 mb-xl-10">
@@ -22,23 +22,463 @@
         <div class="card-body border-top p-9">
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Property Title</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Category</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="company" class="form-control form-control-solid" placeholder="Company name" />
+                    <select class="form-select form-select-solid" data-control="select2" name="Category" data-placeholder="Select an option">
+                        <option></option>
+                        @foreach (var item in Enum.GetValues(typeof(HomePress.PropertyCategories)))
+                        {
+                            <option value="@item" selected="@(Model?.Category.ToString() == item.ToString())">@item</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Type</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" name="PropertyType" data-placeholder="Select an option">
+                        <option></option>
+                        @foreach (var item in Enum.GetValues(typeof(HomePress.PropertyTypes)))
+                        {
+                            <option value="@item" selected="@(Model?.PropertyType.ToString() == item.ToString())">@item</option>
+                        }
+                    </select>
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Property Title</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select an option">
+                    <input type="text" name="Title" class="form-control form-control-solid" value="@Model?.Title" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Sub Title</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="SubTitle" class="form-control form-control-solid" value="@Model?.SubTitle" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Description</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <textarea class="form-control form-control-solid" name="Description" rows="6">@Model?.Description</textarea>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Price</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <div class="row">
+                        <div class="col-8">
+                            <input type="text" name="Price" class="form-control form-control-solid money" value="@Model?.Price" />
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select form-select-solid" data-control="select2" name="PricePrefix" data-placeholder="Select an option">
+                                <option></option>
+                                @foreach (var item in Enum.GetValues(typeof(HomePress.PricePrefix)))
+                                {
+                                    <option value="@item" selected="@(Model?.PricePrefix.ToString() == item.ToString())">@item</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mt-10">
+                <div class="col my-10 border-bottom">
+                    <h3>
+                        Location
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Country</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" name="CountryId" data-placeholder="Select an option">
                         <option></option>
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
+
                     </select>
                 </div>
             </div>
 
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">State</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" name="StateId" data-placeholder="Select an option">
+                        <option></option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">City</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" name="CityId" data-placeholder="Select an option">
+                        <option></option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">District</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <select class="form-select form-select-solid" data-control="select2" name="DistrictId" data-placeholder="Select an option">
+                        <option></option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Address</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="PropertyAddress" class="form-control form-control-solid" value="@Model?.PropertyAddress" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Map Location</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="MapLocation" class="form-control form-control-solid" value="@(Model != null ? Model.MapLAT + "," + Model.MapLNG : "")" />
+                </div>
+            </div>
+
+
+
+            <div class="row mt-10">
+                <div class="col my-10 border-bottom">
+                    <h3>
+                        Building Information
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Deliver Date</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingDeliverDate" class="form-control form-control-solid" value="@Model?.BuildingDeliverDate" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Build Year</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingBuildYear" class="form-control form-control-solid numeric" value="@Model?.BuildingBuildYear" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Floors</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingFloors" class="form-control form-control-solid numeric" value="@Model?.BuildingFloors" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Units</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingUnits" class="form-control form-control-solid numeric" value="@Model?.BuildingUnits" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Distance To Bus (m)</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingDistanceToBus" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToBus" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To Beach (m)</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingDistanceToBeach" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToBeach" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To City Center (m)</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingDistanceToCityCenter" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToCityCenter" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To Shopping Center (m)</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingDistanceToShoppingCenter" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToShoppingCenter" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To Hospital (m)</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="BuildingDistanceToHospital" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToHospital" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Amenities</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <div class="form-check form-check-custom form-check-solid">
+                                <input type="checkbox" class="form-check-input" id="BuildingElevator" name="BuildingElevator" value="true" checked="@Model?.BuildingElevator" />
+                                <label class="form-check-label" for="BuildingElevator">Elevator</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingDoorman" name="BuildingDoorman" value="true" checked="@Model?.BuildingDoorman" />
+                                <label class="form-check-label" for="BuildingDoorman">Doorman</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingSecurityCamera" name="BuildingSecurityCamera" value="true" checked="@Model?.BuildingSecurityCamera" />
+                                <label class="form-check-label" for="BuildingSecurityCamera">Security Camera</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingGenerator" name="BuildingGenerator" value="true" checked="@Model?.BuildingGenerator" />
+                                <label class="form-check-label" for="BuildingGenerator">Generator</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingParkingLot" name="BuildingParkingLot" value="true" checked="@Model?.BuildingParkingLot" />
+                                <label class="form-check-label" for="BuildingParkingLot">Parking Lot</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingChildrenPlayGround" name="BuildingChildrenPlayGround" value="true" checked="@Model?.BuildingChildrenPlayGround" />
+                                <label class="form-check-label" for="BuildingChildrenPlayGround">Children PlayGround</label>
+                            </div>
+
+                        </div>
+                        <div class="col col-md-4">
+                            <div class="form-check form-check-custom form-check-solid">
+                                <input type="checkbox" class="form-check-input" id="BuildingCommunalOutdoorSpace" name="BuildingCommunalOutdoorSpace" value="true" checked="@Model?.BuildingCommunalOutdoorSpace" />
+                                <label class="form-check-label" for="BuildingCommunalOutdoorSpace">Communal Outdoor Space</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingCentralTV" name="BuildingCentralTV" value="true" checked="@Model?.BuildingCentralTV" />
+                                <label class="form-check-label" for="BuildingCentralTV">Central TV</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingCommunalWifi" name="BuildingCommunalWifi" value="true" checked="@Model?.BuildingCommunalWifi" />
+                                <label class="form-check-label" for="BuildingCommunalWifi">Communal Wifi</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingAquapark" name="BuildingAquapark" value="true" checked="@Model?.BuildingAquapark" />
+                                <label class="form-check-label" for="BuildingAquapark">Aquapark</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingSwimmingPool" name="BuildingSwimmingPool" value="true" checked="@Model?.BuildingSwimmingPool" />
+                                <label class="form-check-label" for="BuildingSwimmingPool">Outdoor Swimming Pool</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingFitnessCenter" name="BuildingFitnessCenter" value="true" checked="@Model?.BuildingFitnessCenter" />
+                                <label class="form-check-label" for="BuildingFitnessCenter">Fitness Center</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-4">
+                            <div class="form-check form-check-custom form-check-solid">
+                                <input type="checkbox" class="form-check-input" id="BuildingIndoorSwimmingPool" name="BuildingIndoorSwimmingPool" value="true" checked="@Model?.BuildingIndoorSwimmingPool" />
+                                <label class="form-check-label" for="BuildingIndoorSwimmingPool">Indoor Swimming Pool</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingTurkishBath" name="BuildingTurkishBath" value="true" checked="@Model?.BuildingTurkishBath" />
+                                <label class="form-check-label" for="BuildingTurkishBath">Turkish Bath</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingMassageRoom" name="BuildingMassageRoom" value="true" checked="@Model?.BuildingMassageRoom" />
+                                <label class="form-check-label" for="BuildingMassageRoom">Massage Room</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingSauna" name="BuildingSauna" value="true" checked="@Model?.BuildingSauna" />
+                                <label class="form-check-label" for="BuildingSauna">Sauna</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingJacuzzi" name="BuildingJacuzzi" value="true" checked="@Model?.BuildingJacuzzi" />
+                                <label class="form-check-label" for="BuildingJacuzzi">Jacuzzi</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="BuildingSteamRoom" name="BuildingSteamRoom" value="true" checked="@Model?.BuildingSteamRoom" />
+                                <label class="form-check-label" for="BuildingSteamRoom">Steam Room</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Building Other Features</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <textarea class="form-control form-control-solid" name="BuildingOtherFeatures" rows="6">@Model?.BuildingOtherFeatures</textarea>
+                </div>
+            </div>
+
+            <div class="row mt-10">
+                <div class="col my-10 border-bottom">
+                    <h3>
+                        Unit Information
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Floor</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="UnitFloor" class="form-control form-control-solid numeric" value="@Model?.UnitFloor" autocomplete="off" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Bedrooms</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="UnitBedrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBedrooms" autocomplete="off" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Bathrooms</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="UnitBathrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBathrooms" autocomplete="off" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Balcony</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="UnitBalcony" class="form-control form-control-solid numeric" value="@Model?.UnitBalcony" autocomplete="off" />
+                </div>
+            </div>
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Unit Size (MeterSq)</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="UnitMeterSq" class="form-control form-control-solid numeric" value="@Model?.UnitMeterSq" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Facades</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitFacadesNorth" name="UnitFacades" value="North" checked="@Model?.UnitFacades?.Contains("North")" />
+                                <label class="form-check-label" for="UnitFacadesNorth">North</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitFacadesSouth" name="UnitFacades" value="South" checked="@Model?.UnitFacades?.Contains("South")" />
+                                <label class="form-check-label" for="UnitFacadesSouth">South</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitFacadesEast" name="UnitFacades" value="East" checked="@Model?.UnitFacades?.Contains("East")" />
+                                <label class="form-check-label" for="UnitFacadesEast">East</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitFacadesWest" name="UnitFacades" value="West" checked="@Model?.UnitFacades?.Contains("West")" />
+                                <label class="form-check-label" for="UnitFacadesWest">West</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Amenities</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <div class="form-check form-check-custom form-check-solid">
+                                <input type="checkbox" class="form-check-input" id="UnitFurnished" name="UnitFurnished" value="true" checked="@Model?.BuildingSwimmingPool" />
+                                <label class="form-check-label" for="UnitFurnished">Furnished</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitBrandNew" name="UnitBrandNew" value="true" checked="@Model?.UnitBrandNew" />
+                                <label class="form-check-label" for="UnitBrandNew">Brand New</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitWhiteGoods" name="UnitWhiteGoods" value="true" checked="@Model?.UnitWhiteGoods" />
+                                <label class="form-check-label" for="UnitWhiteGoods">White Goods</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitWaterHeater" name="UnitWaterHeater" value="true" checked="@Model?.UnitWaterHeater" />
+                                <label class="form-check-label" for="UnitWaterHeater">Water Heater</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitAirConditioner" name="UnitAirConditioner" value="true" checked="@Model?.UnitAirConditioner" />
+                                <label class="form-check-label" for="UnitAirConditioner">Air Conditioner</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitWifi" name="UnitWifi" value="true" checked="@Model?.UnitWifi" />
+                                <label class="form-check-label" for="UnitWifi">Wifi</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-4">
+                            <div class="form-check form-check-custom form-check-solid">
+                                <input type="checkbox" class="form-check-input" id="UnitPrivateParking" name="UnitPrivateParking" value="true" checked="@Model?.UnitPrivateParking" />
+                                <label class="form-check-label" for="UnitPrivateParking">Private Parking</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitSauna" name="UnitSauna" value="true" checked="@Model?.UnitSauna" />
+                                <label class="form-check-label" for="UnitSauna">Private Sauna</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitJacuzzi" name="UnitJacuzzi" value="true" checked="@Model?.UnitJacuzzi" />
+                                <label class="form-check-label" for="UnitJacuzzi">Private Jacuzzi</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitSeaView" name="UnitSeaView" value="true" checked="@Model?.UnitSeaView" />
+                                <label class="form-check-label" for="UnitSeaView">Sea View</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitDuplex" name="UnitDuplex" value="true" checked="@Model?.UnitDuplex" />
+                                <label class="form-check-label" for="UnitDuplex">Duplex</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitPenthouse" name="UnitPenthouse" value="true" checked="@Model?.UnitPenthouse" />
+                                <label class="form-check-label" for="UnitPenthouse">Penthouse</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-4">
+                            <div class="form-check form-check-custom form-check-solid">
+                                <input type="checkbox" class="form-check-input" id="UnitLuxury" name="UnitLuxury" value="true" checked="@Model?.UnitLuxury" />
+                                <label class="form-check-label" for="UnitLuxury">Luxury</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitCreditAvailable" name="UnitCreditAvailable" value="true" checked="@Model?.UnitCreditAvailable" />
+                                <label class="form-check-label" for="UnitCreditAvailable">Credit Available</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+                                <input type="checkbox" class="form-check-input" id="UnitExchangeAvailable" name="UnitExchangeAvailable" value="true" checked="@Model?.UnitExchangeAvailable" />
+                                <label class="form-check-label" for="UnitExchangeAvailable">Exchange Available</label>
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+
+                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Building Other Features</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <textarea class="form-control form-control-solid" name="UnitOtherFeatures" rows="6">@Model?.UnitOtherFeatures</textarea>
+                </div>
+            </div>
 
         </div>
 
