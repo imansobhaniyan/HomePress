@@ -1,7 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Routing
 
 @{
-    var controller = Context.GetRouteValue("controller");
+    var controller = Context.GetRouteValue("controller")?.ToString()?.ToLower();
+    var action = Context.GetRouteValue("action")?.ToString()?.ToLower();
 }
 
 <!DOCTYPE html>
@@ -2449,7 +2450,7 @@
 
     <div class="modal fade delete-modal" tabindex="-1" id="kt_modal_1">
         <div class="modal-dialog">
-            <form class="modal-content" method="post" action="/@controller/delete">
+            <form class="modal-content" method="post" action="/@controller/@(action?.Replace("index", "/delete"))">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="ids" />
                 <div class="modal-header">

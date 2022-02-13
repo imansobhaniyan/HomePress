@@ -2,7 +2,7 @@
 
 @model District
 
-<form method="post" class="need-validation" action="/district/save">
+<form method="post" class="need-validation" action="/settings/district/save">
     @Html.AntiForgeryToken()
     <input name="Id" value="@Model.Id" type="hidden" />
     @if (!string.IsNullOrWhiteSpace(Model.Id))
@@ -15,7 +15,7 @@
                 @*<h3 class="fw-bolder m-0">@(string.IsNullOrWhiteSpace(Model.Id) ? "Create" : "Edit") Language</h3>*@
             </div>
             <div class="card-action">
-                <a href="/district" class="btn btn-secondary btn-sm">
+                <a href="/settings/district" class="btn btn-secondary btn-sm">
                     <i class="fa-regular fa-chevron-left"></i>
                     Back To List
                 </a>
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="card-footer text-end">
-            <a href="/district" class="btn btn-secondary btn-sm">
+            <a href="/settings/district" class="btn btn-secondary btn-sm">
                 <i class="fa-regular fa-chevron-left"></i>
                 Back To List
             </a>

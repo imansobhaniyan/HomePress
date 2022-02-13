@@ -1,7 +1,7 @@
 ﻿@model Language
 
 
-<form method="post" class="need-validation" action="/language/save" enctype="multipart/form-data">
+<form method="post" class="need-validation" action="/settings/language/save" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <input name="Id" value="@Model.Id" type="hidden" />
     <input name="FlagUrl" value="@Model.FlagUrl" type="hidden" />
@@ -15,7 +15,7 @@
                 @*<h3 class="fw-bolder m-0">@(string.IsNullOrWhiteSpace(Model.Id) ? "Create" : "Edit") Language</h3>*@
             </div>
             <div class="card-action">
-                <a href="/language" class="btn btn-secondary btn-sm">
+                <a href="/settings/language" class="btn btn-secondary btn-sm">
                     <i class="fa-regular fa-chevron-left"></i>
                     Back To List
                 </a>
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="card-footer text-end">
-            <a href="/language" class="btn btn-secondary btn-sm">
+            <a href="/settings/language" class="btn btn-secondary btn-sm">
                 <i class="fa-regular fa-chevron-left"></i>
                 Back To List
             </a>
