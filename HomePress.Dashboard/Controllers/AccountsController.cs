@@ -4,15 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomePress.Dashboard.Controllers
 {
-    public class UserController : BaseController
+    public class AccountsController : BaseController
     {
-        public UserController(DataService dataService) : base(dataService)
+        public AccountsController(DataService dataService) : base(dataService)
         {
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 20)
+        #region Users
+
+        [Route("/accounts/user")]
+        public async Task<IActionResult> UserIndex(int pageNumber = 1, int pageSize = 20)
         {
-            SetHeader("Users", "Users list", "Add new user", "/user/create");
+            SetHeader("Users", "Users list", "Add new user", "/accounts/user/create");
 
             var query = dataService.Users.Find(f => f.Email != "root").SortByDescending(f => f.CreatedAt);
 
@@ -23,20 +26,20 @@ namespace HomePress.Dashboard.Controllers
             return View(new BaseViewModel<User>(pageSize, pageNumber, totalCount, users));
         }
 
-        [Route("create")]
-        [Route("edit/{id}")]
-        public async Task<IActionResult> Form(string id)
+        [Route("/accounts/user/create")]
+        [Route("/accounts/user/edit/{id}")]
+        public async Task<IActionResult> UserForm(string id)
         {
-            SetHeader("Users", (string.IsNullOrWhiteSpace(id) ? "New" : "Edit") + " user", "Add new user", "/user/create");
+            SetHeader("Users", (string.IsNullOrWhiteSpace(id) ? "New" : "Edit") + " user", "Add new user", "/accounts/user/create");
 
             var user = string.IsNullOrEmpty(id) ? new User() : await (await dataService.Users.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
 
-            return View("form", user);
+            return View("userform", user);
         }
 
-        [HttpPost("save")]
+        [HttpPost("/accounts/user/save")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Save([FromServices] IWebHostEnvironment environment, [FromForm] User model, [FromForm] string newPassword, IFormFile avatarFile)
+        public async Task<IActionResult> UserSave([FromServices] IWebHostEnvironment environment, [FromForm] User model, [FromForm] string newPassword, IFormFile avatarFile)
         {
             try
             {
@@ -55,12 +58,12 @@ namespace HomePress.Dashboard.Controllers
                 SetMessage(MessageType.FailSave);
             }
 
-            return Redirect("/user");
+            return Redirect("/accounts/user");
         }
 
-        [HttpPost("delete")]
+        [HttpPost("/accounts/user/delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string ids)
+        public async Task<IActionResult> UserDelete(string ids)
         {
             try
             {
@@ -73,7 +76,9 @@ namespace HomePress.Dashboard.Controllers
                 SetMessage(MessageType.FailDelete);
             }
 
-            return Redirect("/user");
+            return Redirect("/accounts/user");
         }
+
+        #endregion
     }
 }
