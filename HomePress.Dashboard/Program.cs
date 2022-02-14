@@ -2,6 +2,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<DataService>();
 
+builder.Services.AddSession();
+
 builder.Services
     .AddControllersWithViews()
     .AddRazorRuntimeCompilation();
@@ -16,6 +18,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 

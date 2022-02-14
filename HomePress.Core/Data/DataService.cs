@@ -46,11 +46,10 @@ namespace HomePress.Core.Data
 
         private async Task initRootUser()
         {
-            if (!await (await Users.FindAsync(f => f.Email == "root")).AnyAsync())
+            if (!await (await Users.FindAsync(f => f.UserName == "root")).AnyAsync())
                 await SaveAsync(new User
                 {
-                    Email = "root",
-                    Phone = "root",
+                    UserName = "root",
                     FirstName = "root",
                     LastName = "user",
                     UserType = UserTypes.Admin,

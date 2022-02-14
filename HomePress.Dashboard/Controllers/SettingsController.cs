@@ -15,6 +15,9 @@ namespace HomePress.Dashboard.Controllers
         [Route("/settings/district")]
         public async Task<IActionResult> DistrictIndex(int pageNumber = 1, int pageSize = 20)
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             SetHeader("Districts", "Districts list", "Add new district", "/settings/district/create");
 
             var query = dataService.Districts.Find(f => true).SortByDescending(f => f.CreatedAt);
@@ -36,6 +39,9 @@ namespace HomePress.Dashboard.Controllers
         [Route("/settings/district/edit/{id}")]
         public async Task<IActionResult> DistrictForm(string id)
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             SetHeader("District", (string.IsNullOrWhiteSpace(id) ? "New" : "Edit") + " district", "Add new district", "/settings/district/create");
 
             var district = string.IsNullOrWhiteSpace(id) ? new District() : await (await dataService.Districts.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
@@ -84,6 +90,9 @@ namespace HomePress.Dashboard.Controllers
         [Route("/settings/language")]
         public async Task<IActionResult> LanguageIndex(int pageNumber = 1, int pageSize = 20)
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             SetHeader("Languages", "Languages list", "Add new language", "/settings/language/create");
 
             var query = dataService.Languages.Find(f => true).SortByDescending(f => f.CreatedAt);
@@ -99,6 +108,9 @@ namespace HomePress.Dashboard.Controllers
         [Route("/settings/language/edit/{id}")]
         public async Task<IActionResult> LanguageForm(string id)
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             SetHeader("Languages", (string.IsNullOrWhiteSpace(id) ? "New" : "Edit") + " language", "Add new language", "/settings/language/create");
 
             var language = string.IsNullOrWhiteSpace(id) ? new Language() : await (await dataService.Languages.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();

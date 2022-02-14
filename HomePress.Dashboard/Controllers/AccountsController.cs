@@ -15,9 +15,12 @@ namespace HomePress.Dashboard.Controllers
         [Route("/accounts/user")]
         public async Task<IActionResult> UserIndex(int pageNumber = 1, int pageSize = 20)
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             SetHeader("Users", "Users list", "Add new user", "/accounts/user/create");
 
-            var query = dataService.Users.Find(f => f.Email != "root").SortByDescending(f => f.CreatedAt);
+            var query = dataService.Users.Find(f => f.UserName != "root").SortByDescending(f => f.CreatedAt);
 
             var totalCount = await query.CountDocumentsAsync();
 
@@ -30,6 +33,9 @@ namespace HomePress.Dashboard.Controllers
         [Route("/accounts/user/edit/{id}")]
         public async Task<IActionResult> UserForm(string id)
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             SetHeader("Users", (string.IsNullOrWhiteSpace(id) ? "New" : "Edit") + " user", "Add new user", "/accounts/user/create");
 
             var user = string.IsNullOrEmpty(id) ? new User() : await (await dataService.Users.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
@@ -50,6 +56,8 @@ namespace HomePress.Dashboard.Controllers
 
                 if (!string.IsNullOrWhiteSpace(newPassword) && newPassword != "password")
                     model.Password = Core.Data.User.EncryptPassword(newPassword);
+
+                model.UserName = model.Email;
 
                 await dataService.SaveAsync(model);
             }

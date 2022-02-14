@@ -3,6 +3,8 @@
 
 <form method="post" class="need-validation" action="/accounts/user/save" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
+    <input type="text" hidden />
+    <input type="password" hidden />
     <input name="Id" value="@Model.Id" type="hidden" />
     <input name="Password" value="@Model.Password" type="hidden" />
     <input name="AvatarUrl" value="@Model.AvatarUrl" type="hidden" />

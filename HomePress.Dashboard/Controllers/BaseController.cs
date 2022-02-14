@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using System.Linq;
+
 namespace HomePress.Dashboard.Controllers
 {
     [Route("{controller}")]
@@ -50,6 +52,36 @@ namespace HomePress.Dashboard.Controllers
                     directory.Create();
                 }
             }
+        }
+
+        protected bool IsAuthenticated()
+        {
+            return !string.IsNullOrWhiteSpace(GetUserId());
+        }
+
+        protected string? GetUserId()
+        {
+            var userId = HttpContext.Session.GetString("USERID");
+
+            if (string.IsNullOrWhiteSpace(userId))
+                if (Request.Cookies.TryGetValue("USERID", out userId))
+                    HttpContext.Session.SetString("USERID", userId!);
+
+            return userId;
+        }
+
+        protected void SetUserId(string userId, bool cookie)
+        {
+            HttpContext.Session.SetString("USERID", userId);
+
+            if (cookie)
+                Response.Cookies.Append("USERID", userId, new CookieOptions { MaxAge = TimeSpan.FromDays(7) });
+        }
+
+        protected void ClearUserId()
+        {
+            HttpContext.Session.Remove("USERID");
+            Response.Cookies.Delete("USERID");
         }
 
         public enum MessageType

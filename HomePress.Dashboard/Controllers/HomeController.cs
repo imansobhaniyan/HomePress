@@ -2,11 +2,13 @@
 
 namespace HomePress.Dashboard.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        public IActionResult Index()
+        public HomeController(DataService dataService) : base(dataService)
         {
-            return Redirect("/dashboard");
         }
+
+        [Route("/")]
+        public IActionResult Index() => IsAuthenticated() ? Redirect("/dashboard") : Redirect("/auth/login");
     }
 }

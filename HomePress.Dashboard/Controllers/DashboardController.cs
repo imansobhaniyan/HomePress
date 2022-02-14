@@ -10,6 +10,9 @@ namespace HomePress.Dashboard.Controllers
 
         public IActionResult Index()
         {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
             return View();
         }
     }
