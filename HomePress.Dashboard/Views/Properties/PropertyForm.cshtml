@@ -1,30 +1,39 @@
-﻿@model HomePress.Core.Data.Property
-<form>
-    
+﻿@inject DataService dataService
+
+@model HomePress.Core.Data.Property
+
+<form method="post" class="need-validation" action="/properties/save" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input name="Id" value="@Model.Id" type="hidden" />
+    <input name="MapLAT" value="@Model.MapLAT" type="hidden" />
+    <input name="MapLNG" value="@Model.MapLNG" type="hidden" />
+    <input name="PropertyStatus" value="@Model.PropertyStatus" type="hidden" />
+    @if (!string.IsNullOrWhiteSpace(Model.Id))
+    {
+        <input name="CreatedAt" value="@Model.CreatedAt" type="hidden" />
+    }
     <div class="card mb-5 mb-xl-10">
         <div class="card-header border-0 align-items-center">
             <!--begin::Card title-->
             <div class="card-title m-0">
-                <h3 class="fw-bolder m-0">Property Form</h3>
+                @*<h3 class="fw-bolder m-0">Property Form</h3>*@
             </div>
             <!--end::Card title-->
             <div class="card-action">
-                <a href="" class="btn btn-secondary btn-sm">
+                <a href="/properties" class="btn btn-secondary btn-sm">
                     <i class="fa-regular fa-chevron-left"></i>
                     Back To List
                 </a>
-                <button class="btn btn-success btn-sm">
-                    Save Property
-                </button>
+                <button type="submit" class="btn btn-success btn-sm">Save Property</button>
             </div>
         </div>
 
         <div class="card-body border-top p-9">
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Category</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Category</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" name="Category" data-placeholder="Select an option">
+                    <select class="form-select form-select-solid" data-control="select2" name="Category" data-placeholder="Select an option" required>
                         <option></option>
                         @foreach (var item in Enum.GetValues(typeof(HomePress.PropertyCategories)))
                         {
@@ -35,9 +44,9 @@
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Type</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Type</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" name="PropertyType" data-placeholder="Select an option">
+                    <select class="form-select form-select-solid" data-control="select2" name="PropertyType" data-placeholder="Select an option" required>
                         <option></option>
                         @foreach (var item in Enum.GetValues(typeof(HomePress.PropertyTypes)))
                         {
@@ -48,36 +57,35 @@
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Property Title</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Property Title</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="Title" class="form-control form-control-solid" value="@Model?.Title" />
+                    <input type="text" name="Title" class="form-control form-control-solid" value="@Model?.Title" required />
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Sub Title</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Sub Title</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="SubTitle" class="form-control form-control-solid" value="@Model?.SubTitle" />
+                    <input type="text" name="SubTitle" class="form-control form-control-solid" value="@Model?.SubTitle" required />
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Description</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Description</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <textarea class="form-control form-control-solid" name="Description" rows="6">@Model?.Description</textarea>
+                    <textarea class="form-control form-control-solid" name="Description" rows="6" required>@Model?.Description</textarea>
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Price</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Price</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
                     <div class="row">
                         <div class="col-8">
-                            <input type="text" name="Price" class="form-control form-control-solid money" value="@Model?.Price" />
+                            <input type="text" name="Price" class="form-control form-control-solid money" data-required-error-skip-row="1" value="@Model?.Price" required />
                         </div>
                         <div class="col-4">
                             <select class="form-select form-select-solid" data-control="select2" name="PricePrefix" data-placeholder="Select an option">
-                                <option></option>
                                 @foreach (var item in Enum.GetValues(typeof(HomePress.PricePrefix)))
                                 {
                                     <option value="@item" selected="@(Model?.PricePrefix.ToString() == item.ToString())">@item</option>
@@ -88,7 +96,6 @@
                 </div>
             </div>
 
-
             <div class="row mt-10">
                 <div class="col my-10 border-bottom">
                     <h3>
@@ -98,60 +105,67 @@
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Country</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Country</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" name="CountryId" data-placeholder="Select an option">
-                        <option></option>
-
+                    <select class="form-select form-select-solid" data-control="select2" name="CountryId" data-placeholder="Select an option" required>
+                        @foreach (var country in await (await dataService.Countries.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@country.Id" selected>@country.Name</option>
+                        }
                     </select>
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">State</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">State</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" name="StateId" data-placeholder="Select an option">
-                        <option></option>
-
+                    <select class="form-select form-select-solid" data-control="select2" name="StateId" data-placeholder="Select an option" required>
+                        @foreach (var state in await (await dataService.States.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@state.Id" selected>@state.Name</option>
+                        }
                     </select>
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">City</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">City</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" name="CityId" data-placeholder="Select an option">
-                        <option></option>
-
+                    <select class="form-select form-select-solid" data-control="select2" name="CityId" data-placeholder="Select an option" required>
+                        @foreach (var city in await (await dataService.Cities.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@city.Id" selected>@city.Name</option>
+                        }
                     </select>
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">District</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">District</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <select class="form-select form-select-solid" data-control="select2" name="DistrictId" data-placeholder="Select an option">
+                    <select class="form-select form-select-solid" data-control="select2" name="DistrictId" data-placeholder="Select an option" required>
                         <option></option>
-
+                        @foreach (var district in await (await dataService.Districts.FindAsync(f => true)).ToListAsync())
+                        {
+                            <option value="@district.Id" selected="@(Model.DistrictId == district.Id)">@district.Name</option>
+                        }
                     </select>
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Address</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Address</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="PropertyAddress" class="form-control form-control-solid" value="@Model?.PropertyAddress" />
+                    <input type="text" name="PropertyAddress" class="form-control form-control-solid" value="@Model?.PropertyAddress" required />
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label required fw-bold fs-6">Map Location</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Map Location</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="MapLocation" class="form-control form-control-solid" value="@(Model != null ? Model.MapLAT + "," + Model.MapLNG : "")" />
+                    <input type="text" name="MapLocation" class="form-control form-control-solid" value="@(Model != null && Model.MapLAT != null && Model.MapLNG != null ? Model.MapLAT + "," + Model.MapLNG : "")" required />
                 </div>
             </div>
-
-
 
             <div class="row mt-10">
                 <div class="col my-10 border-bottom">
@@ -171,56 +185,56 @@
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Build Year</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingBuildYear" class="form-control form-control-solid numeric" value="@Model?.BuildingBuildYear" autocomplete="off" />
+                    <input type="text" name="BuildingBuildYear" class="form-control form-control-solid numeric" value="@Model?.BuildingBuildYear" maxlength="4" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Floors</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingFloors" class="form-control form-control-solid numeric" value="@Model?.BuildingFloors" autocomplete="off" />
+                    <input type="text" name="BuildingFloors" class="form-control form-control-solid numeric" value="@Model?.BuildingFloors" maxlength="2" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Units</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingUnits" class="form-control form-control-solid numeric" value="@Model?.BuildingUnits" autocomplete="off" />
+                    <input type="text" name="BuildingUnits" class="form-control form-control-solid numeric" value="@Model?.BuildingUnits" maxlength="3" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Distance To Bus (m)</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingDistanceToBus" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToBus" autocomplete="off" />
+                    <input type="text" name="BuildingDistanceToBus" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToBus" maxlength="5" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To Beach (m)</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingDistanceToBeach" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToBeach" autocomplete="off" />
+                    <input type="text" name="BuildingDistanceToBeach" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToBeach" maxlength="5" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To City Center (m)</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingDistanceToCityCenter" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToCityCenter" autocomplete="off" />
+                    <input type="text" name="BuildingDistanceToCityCenter" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToCityCenter" maxlength="5" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To Shopping Center (m)</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingDistanceToShoppingCenter" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToShoppingCenter" autocomplete="off" />
+                    <input type="text" name="BuildingDistanceToShoppingCenter" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToShoppingCenter" maxlength="5" autocomplete="off" />
                 </div>
             </div>
 
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">To Hospital (m)</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="BuildingDistanceToHospital" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToHospital" autocomplete="off" />
+                    <input type="text" name="BuildingDistanceToHospital" class="form-control form-control-solid numeric" value="@Model?.BuildingDistanceToHospital" maxlength="5" autocomplete="off" />
                 </div>
             </div>
 
@@ -329,31 +343,31 @@
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Floor</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitFloor" class="form-control form-control-solid numeric" value="@Model?.UnitFloor" autocomplete="off" />
+                    <input type="text" name="UnitFloor" class="form-control form-control-solid numeric" value="@Model?.UnitFloor" maxlength="2" autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Bedrooms</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitBedrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBedrooms" autocomplete="off" />
+                    <input type="text" name="UnitBedrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBedrooms" maxlength="1" autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Bathrooms</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitBathrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBathrooms" autocomplete="off" />
+                    <input type="text" name="UnitBathrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBathrooms" maxlength="1" autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Balcony</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitBalcony" class="form-control form-control-solid numeric" value="@Model?.UnitBalcony" autocomplete="off" />
+                    <input type="text" name="UnitBalcony" class="form-control form-control-solid numeric" value="@Model?.UnitBalcony" maxlength="1" autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Unit Size (MeterSq)</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitMeterSq" class="form-control form-control-solid numeric" value="@Model?.UnitMeterSq" autocomplete="off" />
+                    <input type="text" name="UnitMeterSq" class="form-control form-control-solid numeric" value="@Model?.UnitMeterSq" maxlength="4" autocomplete="off" />
                 </div>
             </div>
 
@@ -389,14 +403,13 @@
                 </div>
             </div>
 
-
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Amenities</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
                     <div class="row">
                         <div class="col col-md-4">
                             <div class="form-check form-check-custom form-check-solid">
-                                <input type="checkbox" class="form-check-input" id="UnitFurnished" name="UnitFurnished" value="true" checked="@Model?.BuildingSwimmingPool" />
+                                <input type="checkbox" class="form-check-input" id="UnitFurnished" name="UnitFurnished" value="true" checked="@Model?.UnitFurnished" />
                                 <label class="form-check-label" for="UnitFurnished">Furnished</label>
                             </div>
                             <div class="form-check form-check-custom form-check-solid mt-4">
@@ -459,39 +472,38 @@
                                 <input type="checkbox" class="form-check-input" id="UnitExchangeAvailable" name="UnitExchangeAvailable" value="true" checked="@Model?.UnitExchangeAvailable" />
                                 <label class="form-check-label" for="UnitExchangeAvailable">Exchange Available</label>
                             </div>
-                            <div class="form-check form-check-custom form-check-solid mt-4">
-
-                            </div>
-                            <div class="form-check form-check-custom form-check-solid mt-4">
-
-                            </div>
-                            <div class="form-check form-check-custom form-check-solid mt-4">
-
-                            </div>
+                            <div class="form-check form-check-custom form-check-solid mt-4"></div>
+                            <div class="form-check form-check-custom form-check-solid mt-4"></div>
+                            <div class="form-check form-check-custom form-check-solid mt-4"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="row mb-6">
-                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Building Other Features</label>
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Unit Other Features</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
                     <textarea class="form-control form-control-solid" name="UnitOtherFeatures" rows="6">@Model?.UnitOtherFeatures</textarea>
                 </div>
             </div>
-
         </div>
-
         <div class="card-footer text-end">
-            <a href="" class="btn btn-secondary btn-sm">
+            <a href="/properties" class="btn btn-secondary btn-sm">
                 <i class="fa-regular fa-chevron-left"></i>
                 Back To List
             </a>
-            <button class="btn btn-success btn-sm">
-                Save Property
-            </button>
+            <button type="submit" class="btn btn-success btn-sm">Save Property</button>
         </div>
-
     </div>
-
 </form>
+
+@section scripts {
+<script>
+    $(document).ready(function(){
+        $(".numeric,.money").each(function() {
+            if($(this).val() == "0") 
+                $(this).val("");
+        });
+    });
+</script>
+}

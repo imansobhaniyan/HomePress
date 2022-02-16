@@ -1,11 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-
 namespace HomePress.Core.Data
 {
-
-
     public class Property
     {
         [BsonId]
@@ -18,7 +15,7 @@ namespace HomePress.Core.Data
         public string? SubTitle { get; set; }
         public string? Description { get; set; }
         public double Price { get; set; }
-        public PricePrefix PricePrefix { get; set; }
+        public PricePrefix PricePrefix { get; set; } = PricePrefix.EUR;
         public PropertyTypes PropertyType { get; set; }
         public PropertyStatus PropertyStatus { get; set; }
         public PropertyCategories Category { get; set; }
@@ -92,6 +89,7 @@ namespace HomePress.Core.Data
         public bool UnitExchangeAvailable { get; set; }
         public string? UnitOtherFeatures { get; set; }
 
+        public string? CreatorUserId { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime PublishedAt { get; set; }
@@ -107,11 +105,4 @@ namespace HomePress.Core.Data
         public string? Width1024 { get; set; }
         public string? Width1920 { get; set; }
     }
-
-    
-
-
-
-
-
 }

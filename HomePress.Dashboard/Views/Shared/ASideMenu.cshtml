@@ -18,7 +18,7 @@
                 </a>
             </div>
 
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(controller == "Properties" ? "show" : string.Empty)">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <i class="fa-regular fa-home"></i>
@@ -29,7 +29,7 @@
                 <div class="menu-sub menu-sub-accordion">
 
                     <div class="menu-item">
-                        <a class="menu-link" href="/">
+                        <a class="menu-link @(controller == "Properties" && action == "PropertyIndex" && Context.Request.Path.Value!.Contains("/draft") ? "active" : string.Empty)" href="/properties/draft">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="menu-item">
-                        <a class="menu-link" href="/">
+                        <a class="menu-link @(controller == "Properties" && action == "PropertyIndex" && !Context.Request.Path.Value!.Contains("/draft") ? "active" : string.Empty)" href="/properties">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="menu-item">
-                        <a class="menu-link" href="/">
+                        <a class="menu-link @(controller == "Properties" && action == "PropertyForm" ? "active" : string.Empty)" href="/properties/create">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

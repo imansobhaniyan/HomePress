@@ -1,17 +1,20 @@
 ﻿
 $(document).ready(function () {
 
-	$("input.numeric").numeric();
-	$("input.money").money();
+    $("input.numeric").numeric();
+    $("input.money").money();
 
     $("form.need-validation").each(function () {
 
-        $(this).find("input,select").each(function () {
+        $(this).find("input,select,textarea").each(function () {
             if (isRequired(this) || $(this).prop("type") == "email")
-                $(this).on("keyup, input, change", function () {
+                $(this).on("keyup input change", function () {
                     if (hasValue(this)) {
                         $(this).removeClass("is-invalid");
-                        $(this).parents(".row:eq(0)").find(".error").remove();
+                        var eq = 0;
+                        if ($(this).data("required-error-skip-row"))
+                            eq = $(this).data("required-error-skip-row");
+                        $(this).parents(".row:eq(" + eq + ")").find(".error").remove();
                     }
                 });
 
@@ -35,10 +38,13 @@ $(document).ready(function () {
 
             $("button[type=submit]").prop("disabled", true);
 
-            $(this).find("input,select").each(function () {
+            $(this).find("input,select,textarea").each(function () {
                 if (isRequired(this) && !hasValue(this)) {
                     $(this).addClass("is-invalid");
-                    $(this).parents(".row:eq(0)").append("<small class='col-xl-4 col-lg-3 col-md-12 text-danger text-sm mt-3 error'>This field cannot be left blank</small>");
+                    var eq = 0;
+                    if ($(this).data("required-error-skip-row"))
+                        eq = $(this).data("required-error-skip-row");
+                    $(this).parents(".row:eq(" + eq + ")").append("<small class='col-xl-4 col-lg-3 col-md-12 text-danger text-sm mt-3 error'>This field cannot be left blank</small>");
                     isValid = false;
                 } else if (hasValue(this) && $(this).data("email") && !isValidEmail($(this).val())) {
                     $(this).addClass("is-invalid");
@@ -47,7 +53,10 @@ $(document).ready(function () {
                 }
                 else {
                     $(this).removeClass("is-invalid");
-                    $(this).parents(".row:eq(0)").find(".error").remove();
+                    var eq = 0;
+                    if ($(this).data("required-error-skip-row"))
+                        eq = $(this).data("required-error-skip-row");
+                    $(this).parents(".row:eq(" + eq + ")").find(".error").remove();
                 }
             });
 
@@ -155,178 +164,178 @@ function SetPage(pageNumber) {
 
 
 jQuery.fn.numeric = function (decimal, callback) {
-	decimal = decimal || ".";
-	callback = typeof callback == "function" ? callback : function () { };
-	this.keypress(
-		function (e) {
-			var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
-			// allow enter/return key (only when in an input box)
-			if (key == 13 && this.nodeName.toLowerCase() == "input") {
-				return true;
-			}
-			else if (key == 13) {
-				return false;
-			}
-			var allow = false;
-			// allow Ctrl+A
-			if ((e.ctrlKey && key == 97 /* firefox */) || (e.ctrlKey && key == 65) /* opera */) return true;
-			// allow Ctrl+X (cut)
-			if ((e.ctrlKey && key == 120 /* firefox */) || (e.ctrlKey && key == 88) /* opera */) return true;
-			// allow Ctrl+C (copy)
-			if ((e.ctrlKey && key == 99 /* firefox */) || (e.ctrlKey && key == 67) /* opera */) return true;
-			// allow Ctrl+Z (undo)
-			if ((e.ctrlKey && key == 122 /* firefox */) || (e.ctrlKey && key == 90) /* opera */) return true;
-			// allow or deny Ctrl+V (paste), Shift+Ins
-			if ((e.ctrlKey && key == 118 /* firefox */) || (e.ctrlKey && key == 86) /* opera */
-				|| (e.shiftKey && key == 45)) return true;
-			// if a number was not pressed
-			if (key < 48 || key > 57) {
-				/* '-' only allowed at start */
-				if (key == 45 && this.value.length == 0) return true;
-				/* only one decimal separator allowed */
-				if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) != -1) {
-					allow = false;
-				}
-				// check for other keys that have special purposes
-				if (
-					key != 8 /* backspace */ &&
-					key != 9 /* tab */ &&
-					key != 13 /* enter */ &&
-					key != 35 /* end */ &&
-					key != 36 /* home */ &&
-					key != 37 /* left */ &&
-					key != 39 /* right */ &&
-					key != 46 /* del */
-				) {
-					allow = false;
-				}
-				else {
-					// for detecting special keys (listed above)
-					// IE does not support 'charCode' and ignores them in keypress anyway
-					if (typeof e.charCode != "undefined") {
-						// special keys have 'keyCode' and 'which' the same (e.g. backspace)
-						if (e.keyCode == e.which && e.which != 0) {
-							allow = true;
-						}
-						// or keyCode != 0 and 'charCode'/'which' = 0
-						else if (e.keyCode != 0 && e.charCode == 0 && e.which == 0) {
-							allow = true;
-						}
-					}
-				}
-				// if key pressed is the decimal and it is not already in the field
-				if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) == -1) {
-					allow = true;
-				}
-			}
-			else {
-				allow = true;
-			}
-			return allow;
-		}
-	)
-		.blur(
-			function () {
-				var val = jQuery(this).val();
-				if (val != "") {
-					var re = new RegExp("^\\d+$|\\d*" + decimal + "\\d+");
-					if (!re.exec(val)) {
-						callback.apply(this);
-					}
-				}
-			}
-		)
-	return this;
+    decimal = decimal || ".";
+    callback = typeof callback == "function" ? callback : function () { };
+    this.keypress(
+        function (e) {
+            var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+            // allow enter/return key (only when in an input box)
+            if (key == 13 && this.nodeName.toLowerCase() == "input") {
+                return true;
+            }
+            else if (key == 13) {
+                return false;
+            }
+            var allow = false;
+            // allow Ctrl+A
+            if ((e.ctrlKey && key == 97 /* firefox */) || (e.ctrlKey && key == 65) /* opera */) return true;
+            // allow Ctrl+X (cut)
+            if ((e.ctrlKey && key == 120 /* firefox */) || (e.ctrlKey && key == 88) /* opera */) return true;
+            // allow Ctrl+C (copy)
+            if ((e.ctrlKey && key == 99 /* firefox */) || (e.ctrlKey && key == 67) /* opera */) return true;
+            // allow Ctrl+Z (undo)
+            if ((e.ctrlKey && key == 122 /* firefox */) || (e.ctrlKey && key == 90) /* opera */) return true;
+            // allow or deny Ctrl+V (paste), Shift+Ins
+            if ((e.ctrlKey && key == 118 /* firefox */) || (e.ctrlKey && key == 86) /* opera */
+                || (e.shiftKey && key == 45)) return true;
+            // if a number was not pressed
+            if (key < 48 || key > 57) {
+                /* '-' only allowed at start */
+                if (key == 45 && this.value.length == 0) return true;
+                /* only one decimal separator allowed */
+                if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) != -1) {
+                    allow = false;
+                }
+                // check for other keys that have special purposes
+                if (
+                    key != 8 /* backspace */ &&
+                    key != 9 /* tab */ &&
+                    key != 13 /* enter */ &&
+                    key != 35 /* end */ &&
+                    key != 36 /* home */ &&
+                    key != 37 /* left */ &&
+                    key != 39 /* right */ &&
+                    key != 46 /* del */
+                ) {
+                    allow = false;
+                }
+                else {
+                    // for detecting special keys (listed above)
+                    // IE does not support 'charCode' and ignores them in keypress anyway
+                    if (typeof e.charCode != "undefined") {
+                        // special keys have 'keyCode' and 'which' the same (e.g. backspace)
+                        if (e.keyCode == e.which && e.which != 0) {
+                            allow = true;
+                        }
+                        // or keyCode != 0 and 'charCode'/'which' = 0
+                        else if (e.keyCode != 0 && e.charCode == 0 && e.which == 0) {
+                            allow = true;
+                        }
+                    }
+                }
+                // if key pressed is the decimal and it is not already in the field
+                if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) == -1) {
+                    allow = true;
+                }
+            }
+            else {
+                allow = true;
+            }
+            return allow;
+        }
+    )
+        .blur(
+            function () {
+                var val = jQuery(this).val();
+                if (val != "") {
+                    var re = new RegExp("^\\d+$|\\d*" + decimal + "\\d+");
+                    if (!re.exec(val)) {
+                        callback.apply(this);
+                    }
+                }
+            }
+        )
+    return this;
 }
 
 jQuery.fn.money = function (decimal, callback) {
-	decimal = decimal || ".";
-	callback = typeof callback == "function" ? callback : function () { };
-	this.keypress(
-		function (e) {
+    decimal = decimal || ".";
+    callback = typeof callback == "function" ? callback : function () { };
+    this.keypress(
+        function (e) {
 
-			var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
-			// allow enter/return key (only when in an input box)
-			if (key == 13 && this.nodeName.toLowerCase() == "input") {
-				return true;
-			}
-			else if (key == 13) {
-				return false;
-			}
-			var allow = false;
-			// allow Ctrl+A
-			if ((e.ctrlKey && key == 97 /* firefox */) || (e.ctrlKey && key == 65) /* opera */) return true;
-			// allow Ctrl+X (cut)
-			if ((e.ctrlKey && key == 120 /* firefox */) || (e.ctrlKey && key == 88) /* opera */) return true;
-			// allow Ctrl+C (copy)
-			if ((e.ctrlKey && key == 99 /* firefox */) || (e.ctrlKey && key == 67) /* opera */) return true;
-			// allow Ctrl+Z (undo)
-			if ((e.ctrlKey && key == 122 /* firefox */) || (e.ctrlKey && key == 90) /* opera */) return true;
-			// allow or deny Ctrl+V (paste), Shift+Ins
-			if ((e.ctrlKey && key == 118 /* firefox */) || (e.ctrlKey && key == 86) /* opera */
-				|| (e.shiftKey && key == 45)) return true;
-			// if a number was not pressed
-			if (key < 48 || key > 57) {
-				/* '-' only allowed at start */
-				if (key == 45 && this.value.length == 0) return true;
-				/* only one decimal separator allowed */
-				if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) != -1) {
-					allow = false;
-				}
-				// check for other keys that have special purposes
-				if (
-					key != 8 /* backspace */ &&
-					key != 9 /* tab */ &&
-					key != 13 /* enter */ &&
-					key != 35 /* end */ &&
-					key != 36 /* home */ &&
-					key != 37 /* left */ &&
-					key != 39 /* right */ &&
-					key != 46 /* del */
-				) {
-					allow = false;
-				}
-				else {
-					// for detecting special keys (listed above)
-					// IE does not support 'charCode' and ignores them in keypress anyway
-					if (typeof e.charCode != "undefined") {
-						// special keys have 'keyCode' and 'which' the same (e.g. backspace)
-						if (e.keyCode == e.which && e.which != 0) {
-							allow = true;
-						}
-						// or keyCode != 0 and 'charCode'/'which' = 0
-						else if (e.keyCode != 0 && e.charCode == 0 && e.which == 0) {
-							allow = true;
-						}
-					}
-				}
-				// if key pressed is the decimal and it is not already in the field
-				if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) == -1) {
-					allow = true;
-				}
-			}
-			else {
-				allow = true;
-			}
-			return allow;
-		}
-	)
-		.keyup(
-			function () {
-				var ctrl = this;
-				var separator = ",";
-				var int = ctrl.value.replace(new RegExp(separator, "g"), "");
-				var regexp = new RegExp("\\B(\\d{3})(" + separator + "|$)");
-				do {
-					int = int.replace(regexp, separator + "$1");
-				}
-				while (int.search(regexp) >= 0)
-				ctrl.value = int;
-			}
-		)
-	return this;
+            var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+            // allow enter/return key (only when in an input box)
+            if (key == 13 && this.nodeName.toLowerCase() == "input") {
+                return true;
+            }
+            else if (key == 13) {
+                return false;
+            }
+            var allow = false;
+            // allow Ctrl+A
+            if ((e.ctrlKey && key == 97 /* firefox */) || (e.ctrlKey && key == 65) /* opera */) return true;
+            // allow Ctrl+X (cut)
+            if ((e.ctrlKey && key == 120 /* firefox */) || (e.ctrlKey && key == 88) /* opera */) return true;
+            // allow Ctrl+C (copy)
+            if ((e.ctrlKey && key == 99 /* firefox */) || (e.ctrlKey && key == 67) /* opera */) return true;
+            // allow Ctrl+Z (undo)
+            if ((e.ctrlKey && key == 122 /* firefox */) || (e.ctrlKey && key == 90) /* opera */) return true;
+            // allow or deny Ctrl+V (paste), Shift+Ins
+            if ((e.ctrlKey && key == 118 /* firefox */) || (e.ctrlKey && key == 86) /* opera */
+                || (e.shiftKey && key == 45)) return true;
+            // if a number was not pressed
+            if (key < 48 || key > 57) {
+                /* '-' only allowed at start */
+                if (key == 45 && this.value.length == 0) return true;
+                /* only one decimal separator allowed */
+                if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) != -1) {
+                    allow = false;
+                }
+                // check for other keys that have special purposes
+                if (
+                    key != 8 /* backspace */ &&
+                    key != 9 /* tab */ &&
+                    key != 13 /* enter */ &&
+                    key != 35 /* end */ &&
+                    key != 36 /* home */ &&
+                    key != 37 /* left */ &&
+                    key != 39 /* right */ &&
+                    key != 46 /* del */
+                ) {
+                    allow = false;
+                }
+                else {
+                    // for detecting special keys (listed above)
+                    // IE does not support 'charCode' and ignores them in keypress anyway
+                    if (typeof e.charCode != "undefined") {
+                        // special keys have 'keyCode' and 'which' the same (e.g. backspace)
+                        if (e.keyCode == e.which && e.which != 0) {
+                            allow = true;
+                        }
+                        // or keyCode != 0 and 'charCode'/'which' = 0
+                        else if (e.keyCode != 0 && e.charCode == 0 && e.which == 0) {
+                            allow = true;
+                        }
+                    }
+                }
+                // if key pressed is the decimal and it is not already in the field
+                if (key == decimal.charCodeAt(0) && this.value.indexOf(decimal) == -1) {
+                    allow = true;
+                }
+            }
+            else {
+                allow = true;
+            }
+            return allow;
+        }
+    )
+        .keyup(
+            function () {
+                var ctrl = this;
+                var separator = ",";
+                var int = ctrl.value.replace(new RegExp(separator, "g"), "");
+                var regexp = new RegExp("\\B(\\d{3})(" + separator + "|$)");
+                do {
+                    int = int.replace(regexp, separator + "$1");
+                }
+                while (int.search(regexp) >= 0)
+                ctrl.value = int;
+            }
+        )
+    return this;
 }
 
 jQuery.fn.checked = function (decimal, callback) {
-	return $(this).is(":checked");
+    return $(this).is(":checked");
 }

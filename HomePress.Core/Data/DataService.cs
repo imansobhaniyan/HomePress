@@ -95,13 +95,13 @@ namespace HomePress.Core.Data
         {
             var update = !string.IsNullOrEmpty(item.Id);
 
-            item.ModifiedAt = DateTime.Now;
+            item.ModifiedAt = DateTime.UtcNow;
 
             if (update)
                 await countries.ReplaceOneAsync(f => f.Id == item.Id, item);
             else
             {
-                item.CreatedAt = DateTime.Now;
+                item.CreatedAt = DateTime.UtcNow;
                 await countries.InsertOneAsync(item);
             }
             return item;
@@ -117,13 +117,13 @@ namespace HomePress.Core.Data
         {
             var update = !string.IsNullOrEmpty(item.Id);
 
-            item.ModifiedAt = DateTime.Now;
+            item.ModifiedAt = DateTime.UtcNow;
 
             if (update)
                 await states.ReplaceOneAsync(f => f.Id == item.Id, item);
             else
             {
-                item.CreatedAt = DateTime.Now;
+                item.CreatedAt = DateTime.UtcNow;
                 await states.InsertOneAsync(item);
             }
             return item;
@@ -139,13 +139,13 @@ namespace HomePress.Core.Data
         {
             var update = !string.IsNullOrEmpty(item.Id);
 
-            item.ModifiedAt = DateTime.Now;
+            item.ModifiedAt = DateTime.UtcNow;
 
             if (update)
                 await cities.ReplaceOneAsync(f => f.Id == item.Id, item);
             else
             {
-                item.CreatedAt = DateTime.Now;
+                item.CreatedAt = DateTime.UtcNow;
                 await cities.InsertOneAsync(item);
             }
             return item;
@@ -161,13 +161,13 @@ namespace HomePress.Core.Data
         {
             var update = !string.IsNullOrEmpty(item.Id);
 
-            item.ModifiedAt = DateTime.Now;
+            item.ModifiedAt = DateTime.UtcNow;
 
             if (update)
                 await districts.ReplaceOneAsync(f => f.Id == item.Id, item);
             else
             {
-                item.CreatedAt = DateTime.Now;
+                item.CreatedAt = DateTime.UtcNow;
                 await districts.InsertOneAsync(item);
             }
 
@@ -189,13 +189,13 @@ namespace HomePress.Core.Data
         {
             var update = !string.IsNullOrEmpty(item.Id);
 
-            item.ModifiedAt = DateTime.Now;
+            item.ModifiedAt = DateTime.UtcNow;
 
             if (update)
                 await users.ReplaceOneAsync(f => f.Id == item.Id, item);
             else
             {
-                item.CreatedAt = DateTime.Now;
+                item.CreatedAt = DateTime.UtcNow;
                 await users.InsertOneAsync(item);
             }
 
@@ -217,13 +217,13 @@ namespace HomePress.Core.Data
         {
             var update = !string.IsNullOrEmpty(item.Id);
 
-            item.ModifiedAt = DateTime.Now;
+            item.ModifiedAt = DateTime.UtcNow;
 
             if (update)
                 await languages.ReplaceOneAsync(f => f.Id == item.Id, item);
             else
             {
-                item.CreatedAt = DateTime.Now;
+                item.CreatedAt = DateTime.UtcNow;
                 await languages.InsertOneAsync(item);
             }
             return item;
@@ -237,44 +237,44 @@ namespace HomePress.Core.Data
         #endregion
 
         #region Properties
-        public IQueryable<Property> Properties
-        {
-            get
-            {
-                return properties.AsQueryable();
-            }
-        }
-        public async Task<Property?> FindProperty(string id)
-        {
-            return await properties.Find(f => f.Id == id).FirstOrDefaultAsync();
-        }
 
-        public async Task<Property> Save(Property item)
+        public IMongoCollection<Property> Properties => properties;
+
+        public async Task<Property> SaveAsync(Property item)
         {
             var update = !string.IsNullOrEmpty(item.Id);
             item.ModifiedAt = DateTime.UtcNow;
             if (update)
             {
-                var p = await FindProperty(item.Id);
+                var p = await (await properties.FindAsync(f => f.Id == item.Id)).FirstOrDefaultAsync();
                 item.PropertyID = p.PropertyID;
                 item.CreatedAt = p.CreatedAt;
+                if (item.Photos == null)
+                    item.Photos = p.Photos;
+                if (item.Tags == null)
+                    item.Tags = p.Tags;
+                if (item.UnitFacades == null)
+                    item.UnitFacades = p.UnitFacades;
+                if (string.IsNullOrWhiteSpace(item.CreatorUserId))
+                    item.CreatorUserId = p.CreatorUserId;
                 await properties.ReplaceOneAsync(f => f.Id == item.Id, item);
             }
             else
             {
-                var lastId = Properties.Any() ? Properties.Max(f => f.PropertyID) : 10010;
+                var lastId = await (await properties.FindAsync(f => true)).AnyAsync() ? await Properties.Find(f => true).SortByDescending(f => f.PropertyID).Project(f => f.PropertyID).FirstOrDefaultAsync() : 10010;
                 item.PropertyID = lastId + 1;
                 item.CreatedAt = DateTime.UtcNow;
+                item.PropertyStatus = PropertyStatus.Draft;
                 await properties.InsertOneAsync(item);
             }
             return item;
         }
 
-        public async Task Remove(Property item)
+        public async Task RemovePropertiesAsync(params string[] itemIds)
         {
-            if (string.IsNullOrEmpty(item.Id)) return;
-            await properties.DeleteOneAsync(f => f.Id == item.Id);
+            await properties.DeleteManyAsync(new FilterDefinitionBuilder<Property>().In(f => f.Id, itemIds));
         }
+
         #endregion
     }
 }

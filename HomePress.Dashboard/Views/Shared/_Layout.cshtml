@@ -2450,7 +2450,7 @@
 
     <div class="modal fade delete-modal" tabindex="-1" id="kt_modal_1">
         <div class="modal-dialog">
-            <form class="modal-content" method="post" action="/@controller/@(action?.Replace("index", "/delete"))">
+            <form class="modal-content" method="post" action="@($"/{controller}/{action?.Replace("index", "/delete")}".Replace("//", "/"))">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="ids" />
                 <div class="modal-header">
@@ -2489,6 +2489,7 @@
     <script src="/assets/js/custom/utilities/modals/users-search.js"></script>
     <script src="/assets/js/site.js"></script>
     <!--end::Page Custom Javascript-->
+    @await RenderSectionAsync("scripts", false)
     <!--end::Javascript-->
 </body>
 <!--end::Body-->
