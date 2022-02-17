@@ -349,19 +349,19 @@
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Bedrooms</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitBedrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBedrooms" maxlength="1" autocomplete="off" />
+                    <input type="text" name="UnitBedrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBedrooms" maxlength="1" @(string.IsNullOrWhiteSpace(Model.Id) ? string.Empty : "data-show-zero=true") autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Bathrooms</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitBathrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBathrooms" maxlength="1" autocomplete="off" />
+                    <input type="text" name="UnitBathrooms" class="form-control form-control-solid numeric" value="@Model?.UnitBathrooms" maxlength="1" @(string.IsNullOrWhiteSpace(Model.Id) ? string.Empty : "data-show-zero=true") autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Balcony</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
-                    <input type="text" name="UnitBalcony" class="form-control form-control-solid numeric" value="@Model?.UnitBalcony" maxlength="1" autocomplete="off" />
+                    <input type="text" name="UnitBalcony" class="form-control form-control-solid numeric" value="@Model?.UnitBalcony" maxlength="1" @(string.IsNullOrWhiteSpace(Model.Id) ? string.Empty : "data-show-zero=true") autocomplete="off" />
                 </div>
             </div>
             <div class="row mb-6">
@@ -501,7 +501,7 @@
 <script>
     $(document).ready(function(){
         $(".numeric,.money").each(function() {
-            if($(this).val() == "0") 
+            if($(this).val() == "0" && !$(this).data("show-zero")) 
                 $(this).val("");
         });
     });

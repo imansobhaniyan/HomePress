@@ -1,8 +1,8 @@
 ﻿
 $(document).ready(function () {
 
-    $("input.numeric").numeric();
-    $("input.money").money();
+    $("input.numeric").numeric().keyup();
+    $("input.money").money().keyup();
 
     $("form.need-validation").each(function () {
 
@@ -324,13 +324,16 @@ jQuery.fn.money = function (decimal, callback) {
             function () {
                 var ctrl = this;
                 var separator = ",";
+                var decimalPart = ctrl.value.split('.').length > 1 ? "." + ctrl.value.split('.')[1] : "";
+                if (decimalPart.length > 0)
+                    ctrl.value = ctrl.value.replace(decimalPart, "");
                 var int = ctrl.value.replace(new RegExp(separator, "g"), "");
                 var regexp = new RegExp("\\B(\\d{3})(" + separator + "|$)");
                 do {
                     int = int.replace(regexp, separator + "$1");
                 }
                 while (int.search(regexp) >= 0)
-                ctrl.value = int;
+                ctrl.value = int + decimalPart;
             }
         )
     return this;

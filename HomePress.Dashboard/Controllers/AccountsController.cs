@@ -20,7 +20,7 @@ namespace HomePress.Dashboard.Controllers
 
             SetHeader("Users", "Users list", "Add new user", "/accounts/user/create");
 
-            var query = dataService.Users.Find(f => f.UserName != "root").SortByDescending(f => f.CreatedAt);
+            var query = dataService.Users.Find(f => f.UserName != "root" && f.Email != "root").SortByDescending(f => f.CreatedAt);
 
             var totalCount = await query.CountDocumentsAsync();
 
@@ -39,6 +39,9 @@ namespace HomePress.Dashboard.Controllers
             SetHeader("Users", (string.IsNullOrWhiteSpace(id) ? "New" : "Edit") + " user", "Add new user", "/accounts/user/create");
 
             var user = string.IsNullOrEmpty(id) ? new User() : await (await dataService.Users.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+            if (user.UserName == "root" || user.Email == "root")
+                return NotFound();
 
             return View("userform", user);
         }

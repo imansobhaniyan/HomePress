@@ -39,6 +39,12 @@
                 </div>
             </div>
             <div class="row mb-6">
+                <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">ISO code</label>
+                <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
+                    <input type="text" name="IsoCode" class="form-control form-control-solid" placeholder="ISO code" value="@Model.IsoCode" required />
+                </div>
+            </div>
+            <div class="row mb-6">
                 <label class="col-xl-2 col-lg-3 col-md-4 col-form-label fw-bold fs-6">Flag</label>
                 <div class="col-xl-6 col-lg-6 col-md-8 fv-row">
                     <input type="file" name="FlagFile" class="form-control form-control-solid" @(string.IsNullOrWhiteSpace(Model.Id) ? "required" : string.Empty) />

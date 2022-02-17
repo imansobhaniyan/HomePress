@@ -13,7 +13,7 @@ namespace HomePress.Core.Data
         public string? LocalName { get; set; }
         public bool IsActive { get; set; }
         public bool IsDefault { get; set; }
-
+        public string? IsoCode { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
     }
