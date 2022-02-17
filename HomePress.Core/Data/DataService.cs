@@ -20,6 +20,7 @@ namespace HomePress.Core.Data
         private readonly IMongoCollection<Language> languages;
 
         private readonly IMongoCollection<Property> properties;
+        private readonly IMongoCollection<Dictionary> dictionaries;
 
 
         public DataService(IConfiguration configuration)
@@ -41,8 +42,11 @@ namespace HomePress.Core.Data
             languages = db.GetCollection<Language>("languages");
 
             properties = db.GetCollection<Property>("properties");
+            dictionaries = db.GetCollection<Dictionary>("dictionaries");
 
         }
+
+        #region Init
 
         private async Task initRootUser()
         {
@@ -86,6 +90,26 @@ namespace HomePress.Core.Data
 
             }
         }
+
+        #endregion
+
+        #region Dictionary
+
+        public IMongoCollection<Dictionary> Dictionaries => dictionaries;
+
+        public async Task<Dictionary> SaveAsync(Dictionary item)
+        {
+            var update = !string.IsNullOrEmpty(item.Id);
+
+            if (update)
+                await dictionaries.ReplaceOneAsync(f => f.Id == item.Id, item);
+            else
+                await dictionaries.InsertOneAsync(item);
+
+            return item;
+        }
+
+        #endregion
 
         #region Country
 

@@ -10,6 +10,79 @@ namespace HomePress.Dashboard.Controllers
         {
         }
 
+        #region Dictionary
+
+        [Route("/settings/dictionary")]
+        public async Task<IActionResult> DictionaryIndex()
+        {
+            if (!IsAuthenticated())
+                return Redirect("/auth/login");
+
+            SetHeader("Dictionary", "Dictionary", "Add new key", "#show-add-modal");
+
+            return View();
+        }
+
+        [HttpPost("/settings/dictionary/addkey")]
+        public async Task<IActionResult> DictionaryAddKey(string key, string iso, string value)
+        {
+            try
+            {
+                await dataService.SaveAsync(new Dictionary
+                {
+                    Key = key,
+                    Translates = string.IsNullOrWhiteSpace(iso) && string.IsNullOrWhiteSpace(value) ? null : new List<Dictionary.DictionaryTranslate>
+                    {
+                        new Dictionary.DictionaryTranslate { LanguageISOCode = iso, Value = value }
+                    }
+                });
+
+                SetMessage(MessageType.SuccessSave);
+            }
+            catch
+            {
+                SetMessage(MessageType.FailSave);
+            }
+
+            return Redirect("/settings/dictionary");
+        }
+
+        [HttpPost("/settings/dictionary/setvalue")]
+        public async Task<IActionResult> DictionarySetValue(string key, string iso, string value)
+        {
+            try
+            {
+                var dictioanry = await (await dataService.Dictionaries.FindAsync(f => f.Key == key)).FirstOrDefaultAsync();
+
+                if (dictioanry.Translates == null)
+                    dictioanry.Translates = new List<Dictionary.DictionaryTranslate>();
+
+                var translate = dictioanry.Translates.FirstOrDefault(f => f.LanguageISOCode == iso);
+
+                if (translate == null)
+                    dictioanry.Translates.Add(translate = new Dictionary.DictionaryTranslate { LanguageISOCode = iso });
+
+                translate.Value = value;
+
+                await dataService.SaveAsync(dictioanry);
+
+                return Json(new
+                {
+                    Success = true
+                });
+            }
+            catch (Exception exception)
+            {
+                return Json(new
+                {
+                    Success = false,
+                    ExceptionMessage = exception.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region District
 
         [Route("/settings/district")]

@@ -44,7 +44,10 @@ $(document).ready(function () {
                     var eq = 0;
                     if ($(this).data("required-error-skip-row"))
                         eq = $(this).data("required-error-skip-row");
-                    $(this).parents(".row:eq(" + eq + ")").append("<small class='col-xl-4 col-lg-3 col-md-12 text-danger text-sm mt-3 error'>This field cannot be left blank</small>");
+                    var col = "col-xl-4 col-lg-3 col-md-12";
+                    if ($(this).data("error-col"))
+                        col = $(this).data("error-col");
+                    $(this).parents(".row:eq(" + eq + ")").append("<small class='" + col + " text-danger text-sm mt-3 error'>This field cannot be left blank</small>");
                     isValid = false;
                 } else if (hasValue(this) && $(this).data("email") && !isValidEmail($(this).val())) {
                     $(this).addClass("is-invalid");
