@@ -97,12 +97,25 @@ namespace HomePress.Core.Data
 
     }
 
+    public class PhotoCompact
+    {
+        public string? Width256 { get; set; }
+        public string? Width512 { get; set; }
+        public string? Width1024 { get; set; }
+        public string? Width1920 { get; set; }
+        public string? Caption { get; set; }
+    }
+
     public class Photo
     {
+        public int Id { get; set; }
+        public string? UserId { get; set; }
         public string? OriginalUrl { get; set; }
         public string? Width256 { get; set; }
         public string? Width512 { get; set; }
         public string? Width1024 { get; set; }
         public string? Width1920 { get; set; }
+        public string? Caption { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -145,5 +145,15 @@ namespace HomePress.Dashboard.Controllers
 
             return Redirect(redirectUrl);
         }
+
+
+        [Route("/properties/media/{id}")]
+        public async Task<IActionResult> PropertyMedia()
+        {
+
+            return View();
+        }
+
+
     }
 }
