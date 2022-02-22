@@ -22,7 +22,7 @@ namespace HomePress.Core.Data
 
         public List<string>? Tags { get; set; }
 
-        public List<Photo>? Photos { get; set; }
+        public List<PhotoCompact>? Photos { get; set; }
 
         public double RentDeposite { get; set; }
 
@@ -95,27 +95,5 @@ namespace HomePress.Core.Data
         public DateTime PublishedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
 
-    }
-
-    public class PhotoCompact
-    {
-        public string? Width256 { get; set; }
-        public string? Width512 { get; set; }
-        public string? Width1024 { get; set; }
-        public string? Width1920 { get; set; }
-        public string? Caption { get; set; }
-    }
-
-    public class Photo
-    {
-        public int Id { get; set; }
-        public string? UserId { get; set; }
-        public string? OriginalUrl { get; set; }
-        public string? Width256 { get; set; }
-        public string? Width512 { get; set; }
-        public string? Width1024 { get; set; }
-        public string? Width1920 { get; set; }
-        public string? Caption { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }

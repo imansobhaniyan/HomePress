@@ -22,6 +22,8 @@ namespace HomePress.Core.Data
         private readonly IMongoCollection<Property> properties;
         private readonly IMongoCollection<Dictionary> dictionaries;
 
+        private readonly IMongoCollection<Photo> photos;
+
 
         public DataService(IConfiguration configuration)
         {
@@ -43,6 +45,8 @@ namespace HomePress.Core.Data
 
             properties = db.GetCollection<Property>("properties");
             dictionaries = db.GetCollection<Dictionary>("dictionaries");
+
+            photos = db.GetCollection<Photo>("photo");
 
         }
 
@@ -297,6 +301,31 @@ namespace HomePress.Core.Data
         public async Task RemovePropertiesAsync(params string[] itemIds)
         {
             await properties.DeleteManyAsync(new FilterDefinitionBuilder<Property>().In(f => f.Id, itemIds));
+        }
+
+        #endregion
+
+        #region Photos
+
+        public IMongoCollection<Photo> Photos => photos;
+
+        public async Task<Photo> SaveAsync(Photo item)
+        {
+            var update = !string.IsNullOrEmpty(item.Id);
+
+            if (update)
+                await photos.ReplaceOneAsync(f => f.Id == item.Id, item);
+            else
+            {
+                item.CreatedAt = DateTime.UtcNow;
+                await photos.InsertOneAsync(item);
+            }
+            return item;
+        }
+
+        public async Task RemovePhotosAsync(params string[] itemIds)
+        {
+            await photos.DeleteManyAsync(new FilterDefinitionBuilder<Photo>().In(f => f.Id, itemIds));
         }
 
         #endregion

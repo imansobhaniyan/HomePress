@@ -1,4 +1,5 @@
-﻿using HomePress.Dashboard.ViewModels;
+﻿using HomePress.Dashboard.Utilities;
+using HomePress.Dashboard.ViewModels;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -106,7 +107,7 @@ namespace HomePress.Dashboard.Controllers
                 }
                 catch { }
 
-                if(string.IsNullOrWhiteSpace(property.Id))
+                if (string.IsNullOrWhiteSpace(property.Id))
                     property.CreatorUserId = GetUserId();
 
                 await dataService.SaveAsync(property);
@@ -146,14 +147,123 @@ namespace HomePress.Dashboard.Controllers
             return Redirect(redirectUrl);
         }
 
-
         [Route("/properties/media/{id}")]
-        public async Task<IActionResult> PropertyMedia()
+        [Route("/properties/media/{page}/{id}")]
+        public async Task<IActionResult> PropertyMedia(string id, string page)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                return NotFound();
 
-            return View();
+            if (string.IsNullOrWhiteSpace(page))
+                return Redirect($"/properties/media/photo/{id}");
+
+            SetHeader("Property", "Properties " + page);
+
+            var property = await (await dataService.Properties.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+            if (property == null)
+                return NotFound();
+
+            ViewBag.Page = page;
+
+            return View(property);
         }
 
+        [HttpPost("/properties/upload/{type}/{id}")]
+        public async Task<IActionResult> PropertyUpload([FromServices] IWebHostEnvironment environment, string id, string type)
+        {
+            if (string.IsNullOrWhiteSpace(id) || Request.Form.Files.Count == 0)
+                return NotFound();
 
+            if (type == "photo")
+                return await UploadPhoto(environment, id);
+
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("/properties/caption/{type}/{id}")]
+        public async Task<IActionResult> PropertyCaption(string type, string id, string caption)
+        {
+            if (type == "photo")
+            {
+                var photo = await (await dataService.Photos.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+                photo.Caption = caption;
+
+                await dataService.SaveAsync(photo);
+
+                var property = await (await dataService.Properties.FindAsync(f => f.Id == photo.PropertyId)).FirstOrDefaultAsync();
+
+                var propertyPhoto = property.Photos.FirstOrDefault(f => f.PhotoId == id);
+
+                propertyPhoto.Caption = caption;
+
+                await dataService.SaveAsync(property);
+
+                return Ok();
+            }
+
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("/properties/media/delete/{type}/{id}/{propertyId}")]
+        public async Task<IActionResult> PropertyDeleteMedia(string type, string id, string propertyId)
+        {
+            if (type == "photo")
+            {
+                var property = await (await dataService.Properties.FindAsync(f => f.Id == propertyId)).FirstOrDefaultAsync();
+
+                if (property != null)
+                    property.Photos = property.Photos.Where(f => f.PhotoId != id).ToList();
+
+                await dataService.SaveAsync(property);
+
+                await dataService.RemovePhotosAsync(id);
+
+                return Ok();
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private async Task<IActionResult> UploadPhoto([FromServices] IWebHostEnvironment environment, string id)
+        {
+            var directory = Path.Combine("property", "photo");
+
+            foreach (var file in Request.Form.Files)
+            {
+                var path = await SaveFileIfExistsAsync(environment, directory, file!);
+
+                directory = Path.Combine(directory, DateTime.Now.ToFileTime().ToString());
+
+                var photo = new Photo
+                {
+                    UserId = GetUserId(),
+                    PropertyId = id,
+                    OriginalUrl = path,
+                    Width1920 = await file.SaveResizedAsync(environment, directory, 1920) ?? path,
+                    Width1024 = await file.SaveResizedAsync(environment, directory, 1024) ?? path,
+                    Width512 = await file.SaveResizedAsync(environment, directory, 512) ?? path,
+                    Width256 = await file.SaveResizedAsync(environment, directory, 256) ?? path
+                };
+
+                await dataService.SaveAsync(photo);
+                
+                var property = await (await dataService.Properties.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+                property.Photos.Add(new PhotoCompact
+                {
+                    PhotoId = photo.Id,
+                    Width1920 = photo.Width1920,
+                    Width1024 = photo.Width1024,
+                    Width512 = photo.Width512,
+                    Width256 = photo.Width256
+                });
+
+                await dataService.SaveAsync(property);
+            }
+
+            return Ok();
+        }
     }
 }

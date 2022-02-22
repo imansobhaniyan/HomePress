@@ -1,40 +1,78 @@
-﻿<div class="card mb-6 mb-xl-9">
+﻿@model Property
+
+<div class="card mb-6 mb-xl-9">
     <div class="card-body pt-9 pb-0">
         <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
                     <div class="d-flex flex-column">
                         <div class="d-flex align-items-center mb-1">
-                            <a href="#" class="text-gray-800 text-hover-primary fs-2 fw-bolder me-3">Property Title</a>
-                            <span class="badge badge-light-success me-auto">Property Status</span>
+                            <a href="#" class="text-gray-800 text-hover-primary fs-2 fw-bolder me-3">@Model.Title</a>
+                            @if (Model.PropertyStatus == HomePress.PropertyStatus.Draft)
+                            {
+                                <span class="badge badge-secondary me-auto">Draft</span>
+                            }
+                            else if (Model.PropertyStatus == HomePress.PropertyStatus.Media)
+                            {
+                                <span class="badge badge-primary me-auto">Media</span>
+                            }
+                            else if (Model.PropertyStatus == HomePress.PropertyStatus.Rejected)
+                            {
+                                <span class="badge badge-danger me-auto">Rejected</span>
+                            }
+                            else if (Model.PropertyStatus == HomePress.PropertyStatus.Review)
+                            {
+                                <span class="badge badge-warning me-auto">Review</span>
+                            }
+                            else if (Model.PropertyStatus == HomePress.PropertyStatus.Published)
+                            {
+                                <span class="badge badge-success me-auto">Published</span>
+                            }
+                            else if (Model.PropertyStatus == HomePress.PropertyStatus.Sold)
+                            {
+                                <span class="badge badge-info me-auto">Sold</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-secondary me-auto">Archived</span>
+                            }
                         </div>
-                        <div class="d-flex flex-wrap fw-bold mb-4 fs-5 text-gray-400">#1 Tool to get started with Web Apps any Kind &amp; size</div>
-                    </div>
-                    <div class="d-flex mb-4">
-                        <a href="#" class="btn btn-sm btn-primary me-3" data-bs-toggle="modal" data-bs-target="#kt_modal_new_target">Add Photos</a>
+                        <div class="d-flex flex-wrap fw-bold mb-4 fs-5 text-gray-400">
+                            <span class="text-gray-400 fw-bold fs-7 my-1">
+                                <span class="me-4">
+                                    <i class="fa-regular fa-tag"></i>
+                                    @Model.Category
+                                </span>
+                                <span class="me-4">
+                                    <i class="fa-regular fa-building"></i>
+                                    @Model.PropertyType
+                                </span>
+                                <span class="me-4">
+                                    <i class="fa-regular fa-dollar-sign"></i>
+                                    @Model.Price.ToString("N2") @Model.PricePrefix
+                                </span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!--end::Wrapper-->
         </div>
-        <!--end::Details-->
         <div class="separator"></div>
         <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder">
             <li class="nav-item">
-                <a class="nav-link text-active-primary py-5 me-6 active" href="#">Photos</a>
+                <a class="nav-link text-active-primary py-5 me-6 @(ViewBag.Page == "photo" ? "active" : string.Empty)" href="/properties/media/photo/@Model.Id">Photos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-active-primary py-5 me-6" href="#">Videos</a>
+                <a class="nav-link text-active-primary py-5 me-6 @(ViewBag.Page == "video" ? "active" : string.Empty)" href="/properties/media/video/@Model.Id">Videos</a>
             </li>
-            <li class="nav-item">
+            @*<li class="nav-item">
                 <a class="nav-link text-active-primary py-5 me-6" href="">Virtual Tour</a>
-            </li>
+                </li>*@
         </ul>
     </div>
 </div>
 <div class="card mb-6 mb-xl-9">
     <div class="card-body">
-
         <form class="form" action="#" method="post">
             <div class="fv-row">
                 <div class="dropzone" id="kt_dropzonejs_area">
@@ -42,96 +80,160 @@
                         <i class="bi bi-file-earmark-arrow-up text-primary fs-3x"></i>
                         <div class="ms-4">
                             <h3 class="fs-5 fw-bolder text-gray-900 mb-1">Drop files here or click to upload.</h3>
-                            <span class="fs-7 fw-bold text-gray-400">Allowed files: jpg/jpeg</span>
+                            <span class="fs-7 fw-bold text-gray-400">Allowed files: @(ViewBag.Page == "photo" ? "jpg/jpeg" : "mp4")</span>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
-
     </div>
 </div>
 
-<div class="card mb-6 mb-xl-9">
-    <div class="card-body">
-
-        <div class="row g-10">
-            <div class="col-md-3">
-                <div class="card-xl-stretch me-md-6">
-                    <a class="d-block overlay" data-fslightbox="lightbox-hot-sales" href="/assets/media/stock/600x400/img-23.jpg">
-                        <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px" style="background-image:url('/assets/media/stock/600x400/img-23.jpg')"></div>
-                        <div class="overlay-layer card-rounded bg-dark bg-opacity-25">
-                            <i class="bi bi-eye-fill fs-2x text-white"></i>
-                        </div>
-                    </a>
-                    <div class="mt-5">
-                        <div class="fw-bold fs-5 text-gray-600 text-dark mt-3">
-                            <textarea class="form-control form-control-solid" placeholder="Write Caption here..."></textarea>
-                        </div>
-                        <div class="fs-6 fw-bolder mt-5 d-flex flex-stack">
-                            <a href="#" class="btn btn-sm btn-primary">Update</a>
+@if (ViewBag.Page == "photo" && Model.Photos != null && Model.Photos.Count != 0)
+{
+    <div class="card mb-6 mb-xl-9 photo-cell-container">
+        <div class="card-body">
+            <div class="row g-10">
+                @foreach (var photo in Model.Photos)
+                {
+                    <div class="col-md-3 photo-cell photo-cell-@photo.PhotoId">
+                        <div class="card-xl-stretch me-md-6">
+                            <a class="d-block overlay" data-fslightbox="lightbox-hot-sales" href="@photo.Width1920">
+                                <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px" style="background-image:url('@photo.Width256')"></div>
+                                <div class="overlay-layer card-rounded bg-dark bg-opacity-25">
+                                    <i class="bi bi-eye-fill fs-2x text-white"></i>
+                                </div>
+                            </a>
+                            <div class="mt-5">
+                                <div class="fw-bold fs-5 text-gray-600 text-dark mt-3">
+                                    <textarea class="form-control form-control-solid photo-caption-@photo.PhotoId" placeholder="Write Caption here...">@photo.Caption</textarea>
+                                </div>
+                                <div class="fs-6 fw-bolder mt-5 d-flex justify-content-end">
+                                    <button type="button" class="btn btn-sm btn-primary photo-update-@photo.PhotoId" onclick="event.preventDefault(); updateCaption('photo', '@photo.PhotoId');" style="width: 80px;">Update</button>
+                                    <button type="button" class="btn btn-sm btn-danger mx-2 photo-delete-@photo.PhotoId" onclick="event.preventDefault(); deleteMedia('photo', '@photo.PhotoId');" style="width: 75px;">Delete</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
-
-            <div class="col-md-3">
-                <div class="card-xl-stretch me-md-6">
-                    <a class="d-block overlay" data-fslightbox="lightbox-hot-sales" href="/assets/media/stock/600x400/img-23.jpg">
-                        <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px" style="background-image:url('/assets/media/stock/600x400/img-23.jpg')"></div>
-                        <div class="overlay-layer card-rounded bg-dark bg-opacity-25">
-                            <i class="bi bi-eye-fill fs-2x text-white"></i>
-                        </div>
-                    </a>
-                    <div class="mt-5">
-                        <div class="fw-bold fs-5 text-gray-600 text-dark mt-3">
-                            <textarea class="form-control form-control-solid" placeholder="Write Caption here..."></textarea>
-                        </div>
-                        @*<div class="fs-6 fw-bolder mt-5 d-flex flex-stack">
-                            <a href="#" class="btn btn-sm btn-primary">Update</a>
-                        </div>*@
-                    </div>
-                </div>
-            </div>
-
         </div>
-
     </div>
-</div>
-
-
-
-@section styles {
-    <style type="text/css">
-        textarea.form-control-solid {
-            background-color:transparent!important;
-            resize:none!important;
-            border:none 0!important;
-        }
-    </style>
 }
 
+@*@if (ViewBag.Page == "photo" && Model.Photos != null && Model.Photos.Count != 0)
+{
+    <div class="card mb-6 mb-xl-9 photo-cell-container">
+        <div class="card-body">
+            <div class="row g-10">
+                @foreach (var photo in Model.Photos)
+                {
+                    <div class="col-md-3 photo-cell photo-cell-@photo.PhotoId">
+                        <div class="card-xl-stretch me-md-6">
+                            <a class="d-block overlay" data-fslightbox="lightbox-hot-sales" href="@photo.Width1920">
+                                <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px" style="background-image:url('@photo.Width256')"></div>
+                                <div class="overlay-layer card-rounded bg-dark bg-opacity-25">
+                                    <i class="bi bi-eye-fill fs-2x text-white"></i>
+                                </div>
+                            </a>
+                            <div class="mt-5">
+                                <div class="fw-bold fs-5 text-gray-600 text-dark mt-3">
+                                    <textarea class="form-control form-control-solid photo-caption-@photo.PhotoId" placeholder="Write Caption here...">@photo.Caption</textarea>
+                                </div>
+                                <div class="fs-6 fw-bolder mt-5 d-flex justify-content-end">
+                                    <button type="button" class="btn btn-sm btn-primary photo-update-@photo.PhotoId" onclick="event.preventDefault(); updateCaption('photo', '@photo.PhotoId');" style="width: 80px;">Update</button>
+                                    <button type="button" class="btn btn-sm btn-danger mx-2 photo-delete-@photo.PhotoId" onclick="event.preventDefault(); deleteMedia('photo', '@photo.PhotoId');" style="width: 75px;">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}*@
+
+@section styles {
+<style type="text/css">
+    textarea.form-control-solid {
+        background-color: transparent !important;
+        resize: none !important;
+        border: none 0 !important;
+    }
+</style>
+}
 
 @section scripts {
-    <script src="/assets/plugins/custom/fslightbox/fslightbox.bundle.js"></script>
-    <script>
-        $(document).ready(function () {
+<script src="/assets/plugins/custom/fslightbox/fslightbox.bundle.js"></script>
+<script>
+    $(document).ready(function () {
 
-            var myDropzone = new Dropzone("#kt_dropzonejs_area", {
-                url: "https://keenthemes.com/scripts/void.php", // Set the url for your upload script location
-                paramName: "file", // The name that will be used to transfer the file
-                maxFiles: 10,
-                maxFilesize: 10, // MB
-                addRemoveLinks: true,
-                accept: function (file, done) {
-                    if (file.name == "wow.jpg") {
-                        done("Naha, you don't.");
-                    } else {
-                        done();
-                    }
+        var myDropzone = new Dropzone("#kt_dropzonejs_area", {
+            url: "/properties/upload/@ViewBag.Page/@Model.Id", // Set the url for your upload script location
+            paramName: "file", // The name that will be used to transfer the file
+            maxFiles: 10,
+            maxFilesize: "@ViewBag.Page" == "photo" ? 1.5 : 10, // MB
+            addRemoveLinks: true,
+            acceptedFiles: "@(ViewBag.Page == "photo" ? ".jpg,.jpeg" : ".mp4")",
+            //accept: function (file, done) {
+            //    var validFileExtentions = "@(ViewBag.Page == "photo" ? "jpg,jpeg" : "mp4")";
+
+            //    var validFileTypes = "@(ViewBag.Page == "photo" ? "image/jpg,image/jpeg" : ".mp4")";
+
+            //    var fileExtention = file.name.split(".")[file.name.split(".").length - 1];
+
+            //    if (validFileExtentions.indexOf(fileExtention) != -1 && validFileTypes.indexOf(file.type) != -1)
+            //        done();
+            //    else
+            //        done("Invalid file type, It should be '.jpg' or '.jpeg'.");
+            //},
+            removedfile: function(file) {
+                if(this.getRejectedFiles().length == 0) {
+                    location.reload();
+                    return;
                 }
-            });
 
+                if (file.previewElement != null && file.previewElement.parentNode != null)
+                    file.previewElement.parentNode.removeChild(file.previewElement);
+
+                return this._updateMaxFilesReachedClass();
+            },
+            queuecomplete: function() {
+                if(this.getRejectedFiles().length + this.getUploadingFiles().length + this.getQueuedFiles().length === 0)
+                    location.reload();
+            }
         });
-    </script>
+
+    });
+
+    function updateCaption(type, id) {
+        var btn = $("." + type + "-update-" + id);
+        var oldHtml = btn.html();
+        btn.html("<i class='fa fa-spin fa-spinner' style='padding: 0px'></i>");
+        btn.prop("disabled", true);
+        $.ajax({
+            method: "POST",
+            url: "/properties/caption/" + type + "/" + id,
+            data: {
+                caption: $("." + type + "-caption-" + id).val()
+            },
+            success: function() {
+                btn.html(oldHtml);
+                btn.prop("disabled", false);
+            }
+        });
+    }
+
+    function deleteMedia(type, id) {
+        $("." + type + "-cell-" + id).remove();
+        
+        if($("." + type + "-cell").length == 0)
+            $("." + type + "-cell-container").remove();
+        
+        $.ajax({
+            method: "POST",
+            url: "/properties/media/delete/" + type + "/" + id + "/@Model.Id"
+        });
+    }
+</script>
 }
