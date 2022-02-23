@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="tools\**" />
+    <Content Remove="tools\**" />
+    <EmbeddedResource Remove="tools\**" />
+    <None Remove="tools\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ffmpeg.exe" />
+    <None Remove="ffprobe.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\assets\js\custom\account\api-keys\api-keys.js" />
     <None Include="wwwroot\assets\js\custom\account\orders\classic.js" />
     <None Include="wwwroot\assets\js\custom\account\referrals\referral-program.js" />
@@ -1234,6 +1246,7 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="2.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="Xabe.FFmpeg" Version="5.1.0" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>

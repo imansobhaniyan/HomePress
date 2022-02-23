@@ -30,4 +30,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+Task.Run(async () =>
+{
+    Xabe.FFmpeg.FFmpeg.SetExecutablesPath("tools");
+    await Xabe.FFmpeg.Downloader.FFmpegDownloader.GetLatestVersion(Xabe.FFmpeg.Downloader.FFmpegVersion.Official);
+});
+
 app.Run();

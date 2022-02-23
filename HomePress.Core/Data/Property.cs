@@ -23,6 +23,7 @@ namespace HomePress.Core.Data
         public List<string>? Tags { get; set; }
 
         public List<PhotoCompact>? Photos { get; set; }
+        public List<VideoCompact>? Videos { get; set; }
 
         public double RentDeposite { get; set; }
 

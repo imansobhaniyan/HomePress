@@ -73,7 +73,7 @@
 </div>
 <div class="card mb-6 mb-xl-9">
     <div class="card-body">
-        <form class="form" action="#" method="post">
+        <form class="form drop-zone-form" action="#" method="post">
             <div class="fv-row">
                 <div class="dropzone" id="kt_dropzonejs_area">
                     <div class="dz-message needsclick">
@@ -121,28 +121,29 @@
     </div>
 }
 
-@*@if (ViewBag.Page == "photo" && Model.Photos != null && Model.Photos.Count != 0)
+@if (ViewBag.Page == "video" && Model.Videos != null && Model.Videos.Count != 0)
 {
-    <div class="card mb-6 mb-xl-9 photo-cell-container">
+    <div class="card mb-6 mb-xl-9 video-cell-container">
         <div class="card-body">
             <div class="row g-10">
-                @foreach (var photo in Model.Photos)
+                @foreach (var video in Model.Videos)
                 {
-                    <div class="col-md-3 photo-cell photo-cell-@photo.PhotoId">
+                    <div class="col-md-3 video-cell video-cell-@video.VideoId">
                         <div class="card-xl-stretch me-md-6">
-                            <a class="d-block overlay" data-fslightbox="lightbox-hot-sales" href="@photo.Width1920">
-                                <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px" style="background-image:url('@photo.Width256')"></div>
+                            <a class="d-block overlay" data-fslightbox="lightbox-hot-sales" href="@video.GetHighestQuality()">
+                                <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px" style="background-image:url('@video.Thumbnail')"></div>
                                 <div class="overlay-layer card-rounded bg-dark bg-opacity-25">
                                     <i class="bi bi-eye-fill fs-2x text-white"></i>
                                 </div>
                             </a>
                             <div class="mt-5">
                                 <div class="fw-bold fs-5 text-gray-600 text-dark mt-3">
-                                    <textarea class="form-control form-control-solid photo-caption-@photo.PhotoId" placeholder="Write Caption here...">@photo.Caption</textarea>
+                                    <textarea class="form-control form-control-solid video-caption-@video.VideoId" placeholder="Write Caption here...">@video.Caption</textarea>
                                 </div>
                                 <div class="fs-6 fw-bolder mt-5 d-flex justify-content-end">
-                                    <button type="button" class="btn btn-sm btn-primary photo-update-@photo.PhotoId" onclick="event.preventDefault(); updateCaption('photo', '@photo.PhotoId');" style="width: 80px;">Update</button>
-                                    <button type="button" class="btn btn-sm btn-danger mx-2 photo-delete-@photo.PhotoId" onclick="event.preventDefault(); deleteMedia('photo', '@photo.PhotoId');" style="width: 75px;">Delete</button>
+                                    <button type="button" class="btn btn-sm btn-info video-other-dimentions-@video.VideoId" onclick="event.preventDefault(); otherDimentions('video', '@video.VideoId');" style="width: 80px;">Upload</button>
+                                    <button type="button" class="btn btn-sm btn-primary mx-2 video-update-@video.VideoId" onclick="event.preventDefault(); updateCaption('video', '@video.VideoId');" style="width: 80px;">Update</button>
+                                    <button type="button" class="btn btn-sm btn-danger video-delete-@video.VideoId" onclick="event.preventDefault(); deleteMedia('video', '@video.VideoId');" style="width: 75px;">Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -151,7 +152,7 @@
             </div>
         </div>
     </div>
-}*@
+}
 
 @section styles {
 <style type="text/css">
@@ -166,13 +167,16 @@
 @section scripts {
 <script src="/assets/plugins/custom/fslightbox/fslightbox.bundle.js"></script>
 <script>
+
+    var myDropzone;
+
     $(document).ready(function () {
 
-        var myDropzone = new Dropzone("#kt_dropzonejs_area", {
+        myDropzone = new Dropzone("#kt_dropzonejs_area", {
             url: "/properties/upload/@ViewBag.Page/@Model.Id", // Set the url for your upload script location
             paramName: "file", // The name that will be used to transfer the file
             maxFiles: 10,
-            maxFilesize: "@ViewBag.Page" == "photo" ? 1.5 : 10, // MB
+            maxFilesize: "@ViewBag.Page" == "photo" ? 1.5 : 50, // MB
             addRemoveLinks: true,
             acceptedFiles: "@(ViewBag.Page == "photo" ? ".jpg,.jpeg" : ".mp4")",
             //accept: function (file, done) {
@@ -203,7 +207,6 @@
                     location.reload();
             }
         });
-
     });
 
     function updateCaption(type, id) {
@@ -226,14 +229,22 @@
 
     function deleteMedia(type, id) {
         $("." + type + "-cell-" + id).remove();
-        
+
         if($("." + type + "-cell").length == 0)
             $("." + type + "-cell-container").remove();
-        
+
         $.ajax({
             method: "POST",
             url: "/properties/media/delete/" + type + "/" + id + "/@Model.Id"
         });
+    }
+
+    function otherDimentions(type, id) {
+        if(myDropzone.options.url.indexOf('?') != -1)
+            myDropzone.options.url = myDropzone.options.url.split('?')[0];
+        
+            myDropzone.options.url += "?videoId=" + id;
+        myDropzone.hiddenFileInput.click();
     }
 </script>
 }

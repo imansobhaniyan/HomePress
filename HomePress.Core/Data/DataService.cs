@@ -23,6 +23,7 @@ namespace HomePress.Core.Data
         private readonly IMongoCollection<Dictionary> dictionaries;
 
         private readonly IMongoCollection<Photo> photos;
+        private readonly IMongoCollection<Video> videos;
 
 
         public DataService(IConfiguration configuration)
@@ -46,7 +47,8 @@ namespace HomePress.Core.Data
             properties = db.GetCollection<Property>("properties");
             dictionaries = db.GetCollection<Dictionary>("dictionaries");
 
-            photos = db.GetCollection<Photo>("photo");
+            photos = db.GetCollection<Photo>("photos");
+            videos = db.GetCollection<Video>("videos");
 
         }
 
@@ -326,6 +328,31 @@ namespace HomePress.Core.Data
         public async Task RemovePhotosAsync(params string[] itemIds)
         {
             await photos.DeleteManyAsync(new FilterDefinitionBuilder<Photo>().In(f => f.Id, itemIds));
+        }
+
+        #endregion
+
+        #region Videos
+
+        public IMongoCollection<Video> Videos => videos;
+
+        public async Task<Video> SaveAsync(Video item)
+        {
+            var update = !string.IsNullOrEmpty(item.Id);
+
+            if (update)
+                await videos.ReplaceOneAsync(f => f.Id == item.Id, item);
+            else
+            {
+                item.CreatedAt = DateTime.UtcNow;
+                await videos.InsertOneAsync(item);
+            }
+            return item;
+        }
+
+        public async Task RemoveVideosAsync(params string[] itemIds)
+        {
+            await videos.DeleteManyAsync(new FilterDefinitionBuilder<Video>().In(f => f.Id, itemIds));
         }
 
         #endregion

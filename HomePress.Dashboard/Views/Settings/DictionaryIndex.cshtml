@@ -134,7 +134,7 @@
                                 var value = item.Translates?.Where(f => f.LanguageISOCode == language.IsoCode).Select(f => f.Value).FirstOrDefault();
 
                                 <td class="align-items-center position-relative translate-cell">
-                                    <input type="text" class="form-control form-control-solid pr-50 translate-input" value="@value" placeholder="@language.IsoCode" data-key="@item.Key" data-iso="@language.IsoCode" />
+                                    <input type="text" class="form-control form-control-solid pr-50 translate-input" value="@value" data-key="@item.Key" data-iso="@language.IsoCode" />
                                     <span class="actions-container hidden">
                                         <i class="fas fa-check-circle text-success submit"></i>
                                         <i class="fas fa-ban text-danger reset"></i>

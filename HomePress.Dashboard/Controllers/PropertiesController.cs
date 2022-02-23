@@ -170,13 +170,15 @@ namespace HomePress.Dashboard.Controllers
         }
 
         [HttpPost("/properties/upload/{type}/{id}")]
-        public async Task<IActionResult> PropertyUpload([FromServices] IWebHostEnvironment environment, string id, string type)
+        public async Task<IActionResult> PropertyUpload([FromServices] IWebHostEnvironment environment, string id, string type, string? videoId)
         {
             if (string.IsNullOrWhiteSpace(id) || Request.Form.Files.Count == 0)
                 return NotFound();
 
             if (type == "photo")
                 return await UploadPhoto(environment, id);
+            if (type == "video")
+                return await UploadVideo(environment, id, videoId);
 
             throw new NotImplementedException();
         }
@@ -202,6 +204,24 @@ namespace HomePress.Dashboard.Controllers
 
                 return Ok();
             }
+            if (type == "video")
+            {
+                var video = await (await dataService.Videos.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+                video.Caption = caption;
+
+                await dataService.SaveAsync(video);
+
+                var property = await (await dataService.Properties.FindAsync(f => f.Id == video.PropertyId)).FirstOrDefaultAsync();
+
+                var propertyVideo = property.Videos.FirstOrDefault(f => f.VideoId == id);
+
+                propertyVideo.Caption = caption;
+
+                await dataService.SaveAsync(property);
+
+                return Ok();
+            }
 
             throw new NotImplementedException();
         }
@@ -222,8 +242,92 @@ namespace HomePress.Dashboard.Controllers
 
                 return Ok();
             }
+            if (type == "video")
+            {
+                var property = await (await dataService.Properties.FindAsync(f => f.Id == propertyId)).FirstOrDefaultAsync();
+
+                if (property != null)
+                    property.Videos = property.Videos.Where(f => f.VideoId != id).ToList();
+
+                await dataService.SaveAsync(property);
+
+                await dataService.RemoveVideosAsync(id);
+
+                return Ok();
+            }
 
             throw new NotImplementedException();
+        }
+
+        private async Task<IActionResult> UploadVideo([FromServices] IWebHostEnvironment environment, string id, string? videoId)
+        {
+            var directory = Path.Combine("property", "video");
+
+            foreach (var file in Request.Form.Files)
+            {
+                var path = await SaveFileIfExistsAsync(environment, directory, file!);
+
+                var absolutePath = string.Concat(environment.WebRootPath, path.Replace('/', Path.DirectorySeparatorChar));
+
+                var info = await Xabe.FFmpeg.FFmpeg.GetMediaInfo(absolutePath);
+
+                if (!info.VideoStreams.Any())
+                    continue;
+
+                var video = string.IsNullOrEmpty(videoId) ? null : await (await dataService.Videos.FindAsync(f => f.Id == videoId)).FirstOrDefaultAsync();
+
+                if (video == null)
+                    video = new Video
+                    {
+                        UserId = GetUserId(),
+                        PropertyId = id
+                    };
+
+                video.DurationInSeconds = info.Duration.TotalSeconds;
+
+                var videoStream = info.VideoStreams.FirstOrDefault();
+
+                if (string.IsNullOrWhiteSpace(video.Thumbnail))
+                {
+                    video.Thumbnail = path.ToWebSafePath().Replace("/video/", "/snapshot/").Replace(".mp4", ".jpg");
+
+                    var snapshot = await Xabe.FFmpeg.FFmpeg.Conversions.FromSnippet.Snapshot(absolutePath, absolutePath.Replace(path.ToCrossPlatformSafePath(), video.Thumbnail.ToCrossPlatformSafePath()), TimeSpan.FromSeconds(1));
+
+                    var result = await snapshot.Start();
+                }
+
+                if (videoStream.Width == 1080 || videoStream.Height == 1080)
+                    video.Dimention1080 = path;
+                else if (videoStream.Width == 720 || videoStream.Height == 720)
+                    video.Dimention720 = path;
+                else //if (videoStream.Width == 480 || videoStream.Height == 480)
+                    video.Dimention480 = path;
+
+                await dataService.SaveAsync(video);
+
+                var property = await (await dataService.Properties.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+                if (property.Videos == null)
+                    property.Videos = new List<VideoCompact>();
+
+                var videoCompact = property.Videos.FirstOrDefault(f => f.VideoId == video.Id);
+
+                if (videoCompact == null)
+                    property.Videos.Add(videoCompact = new VideoCompact
+                    {
+                        VideoId = video.Id
+                    });
+
+                videoCompact.Thumbnail = video.Thumbnail;
+                videoCompact.Dimention1080 = video.Dimention1080;
+                videoCompact.Dimention480 = video.Dimention480;
+                videoCompact.Dimention720 = video.Dimention720;
+                videoCompact.DurationInSeconds = video.DurationInSeconds;
+
+                await dataService.SaveAsync(property);
+            }
+
+            return Ok();
         }
 
         private async Task<IActionResult> UploadPhoto([FromServices] IWebHostEnvironment environment, string id)
@@ -248,8 +352,11 @@ namespace HomePress.Dashboard.Controllers
                 };
 
                 await dataService.SaveAsync(photo);
-                
+
                 var property = await (await dataService.Properties.FindAsync(f => f.Id == id)).FirstOrDefaultAsync();
+
+                if (property.Photos == null)
+                    property.Photos = new List<PhotoCompact>();
 
                 property.Photos.Add(new PhotoCompact
                 {

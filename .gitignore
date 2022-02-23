@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /HomePress.Dashboard/wwwroot/uploads
+/HomePress.Dashboard/version.json
+/HomePress.Dashboard/tools
+/HomePress.Dashboard/ffprobe.exe
+/HomePress.Dashboard/ffmpeg.exe

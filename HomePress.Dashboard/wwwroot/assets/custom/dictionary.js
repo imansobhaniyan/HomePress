@@ -12,11 +12,28 @@
         modal.modal("show");
     });
 
+    var index = 0;
+
     $(".translate-input").each(function () {
         $(this).data("value", $(this).val());
+        $(this).data("index", index++);
     });
 
-    $(".translate-input").on("keyup", function () {
+    $(".translate-input").on("keyup", function (e) {
+
+        if (e.key == "Enter") {
+            if ($(this).data("value") != $(this).val())
+                $(this).parent().find(".submit").click();
+            var index = parseInt($(this).data("index"));
+            $(".translate-input").each(function () {
+                if ($(this).data("index") == index + 1) {
+                    $(this).focus();
+                    var that = this;
+                    setTimeout(function () { that.selectionStart = that.selectionEnd = 10000; }, 10);
+                }
+            });
+        }
+
         if ($(this).data("value") != $(this).val()) {
             $(this)
                 .addClass("pr-50")
